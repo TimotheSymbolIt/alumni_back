@@ -1,10 +1,9 @@
 CREATE DATABASE alumni;
 
-
 CREATE TABLE trainings(
   training_id SERIAL PRIMARY KEY,
   name VARCHAR(50) NOT NULL
-)
+);
 
 CREATE TABLE roles (
     role_id SERIAL PRIMARY KEY,
@@ -75,3 +74,10 @@ CREATE TABLE events(
   image_url VARCHAR(255),
   create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+// user roles
+INSERT INTO roles(name) VALUES('alumni');
+INSERT INTO roles(name) VALUES('mentor');
+INSERT INTO roles(name) VALUES('employer');
+INSERT INTO roles(name) VALUES('moderator');
+INSERT INTO roles(name) VALUES('admin');
