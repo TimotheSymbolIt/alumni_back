@@ -2,11 +2,11 @@ const { Router } = require('express');
 const router = Router();
 
 router.route('/').get(getAllCompagnies);
-router.route('/').post(createCompagny);
-// auth require
 
+// auth require
+router.route('/').post(createCompagny);
 router
   .route('/:id')
-  .post(updateCompagny)
   .get(getSingleCompagny)
+  .update(updateCompagny)
   .delete(deleteCompagny);

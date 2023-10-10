@@ -10,5 +10,5 @@ router.route('/').post(createTraining);
 router
   .route('/:id')
   .get(getSingleTraining)
-  .post(updateTraining)
+  .update(updateTraining)
   .delete(deleteTraining);

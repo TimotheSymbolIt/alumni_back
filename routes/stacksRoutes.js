@@ -5,4 +5,8 @@ router.route('/').get(getAllStacks);
 
 // auth require
 router.route('/').post(createStack);
-router.route('/:id').post(updateStack).get(getSingleStack).delete(deleteStack);
+router
+  .route('/:id')
+  .get(getSingleStack)
+  .update(updateStack)
+  .delete(deleteStack);

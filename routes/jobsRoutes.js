@@ -6,5 +6,4 @@ router.route('/').get(getAlljobs);
 
 // auth require
 router.route('/').post(createjob);
-
-router.route('/:id').post(updateJob).get(getSingleJob).delete(deleteJob);
+router.route('/:id').get(getSingleJob).update(updateJob).delete(deleteJob);

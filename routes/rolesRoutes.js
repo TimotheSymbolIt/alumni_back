@@ -5,4 +5,4 @@ router.route('/').get(getAllRoles);
 
 // auth require
 router.route('/').post(createRole);
-router.route('/:id').post(updateRole).get(getSingleRole).delete(deleteRole);
+router.route('/:id').get(getSingleRole).update(updateRole).delete(deleteRole);
