@@ -68,15 +68,6 @@ CREATE TABLE jobs(
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE events(
-  event_id SERIAL PRIMARY KEY,
-  is_activ BOOLEAN NOT NULL DEFAULT FALSE,
-  name VARCHAR(255) NOT NULL,
-  description TEXT,
-  date DATE,
-  image_url VARCHAR(255),
-  create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
 
 // user roles
 INSERT INTO roles(name) VALUES('alumni');
