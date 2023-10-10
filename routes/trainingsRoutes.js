@@ -1,5 +1,5 @@
 //! route des formations
-//! routes des offres emplois
+//! routes des formations
 const { Router } = require('express');
 const router = Router();
 

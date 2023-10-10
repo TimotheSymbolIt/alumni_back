@@ -1,4 +1,4 @@
-//! routes des offres emplois
+//! routes des utilisateurs
 const { Router } = require('express');
 const router = Router();
 

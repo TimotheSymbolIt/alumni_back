@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-
+//! routes des compagnies
 router.route('/').get(getAllCompagnies);
 
 // auth require

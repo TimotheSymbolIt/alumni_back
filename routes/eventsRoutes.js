@@ -2,6 +2,8 @@
 const { Router } = require('express');
 const router = Router();
 
+//! routes des evenements
+
 router.route('/').get(getAllEvents);
 
 // auth require

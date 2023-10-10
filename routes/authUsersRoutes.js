@@ -1,4 +1,4 @@
-//! route de connexion
+//! route de connexion utilisateurs
 const { Router } = require('express');
 const router = Router();
 
