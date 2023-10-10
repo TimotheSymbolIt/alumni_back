@@ -49,12 +49,15 @@ CREATE TABLE user_stack(
 
 CREATE TABLE compagnies(
   compagny_id SERIAL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL,
-  city VARCHAR(50) NOT NULL,
-  description TEXT,
-  adress VARCHAR(255),
+  name VARCHAR(50) NOT NULL, 
   email VARCHAR(255) NOT NULL,
-  user_id INT REFERENCES users(user_id)
+  password VARCHAR(255) NOT NULL,
+  CHECK (char_length(name) >= 3 AND char_length(name) <= 50),
+  CHECK (char_length(password) >= 6),
+  city VARCHAR(50) NOT NULL,
+  adress VARCHAR(255),
+  is_activ BOOLEAN NOT NULL DEFAULT FALSE,
+  description TEXT
 );
 
 CREATE TABLE jobs(
@@ -78,6 +81,5 @@ CREATE TABLE events(
 // user roles
 INSERT INTO roles(name) VALUES('alumni');
 INSERT INTO roles(name) VALUES('mentor');
-INSERT INTO roles(name) VALUES('employer');
 INSERT INTO roles(name) VALUES('moderator');
 INSERT INTO roles(name) VALUES('admin');
