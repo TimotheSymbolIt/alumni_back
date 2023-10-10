@@ -1,1 +1,14 @@
 //! route des formations
+//! routes des formations
+const { Router } = require('express');
+const router = Router();
+
+router.route('/').get(getAllTrainings);
+
+// auth require
+router.route('/').post(createTraining);
+router
+  .route('/:id')
+  .get(getSingleTraining)
+  .update(updateTraining)
+  .delete(deleteTraining);
