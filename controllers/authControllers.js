@@ -18,12 +18,12 @@ const registerUser = async (req, res) => {
     professional_experience,
   } = req.body;
 
-  const {
-    rows: [{ count }],
-  } = await db.query('SELECT COUNT(*) FROM users');
-  const isFirstAccount = Number(count) === 0;
-  const role = isFirstAccount ? 'admin' : 'alumni';
-
+  // const {
+  //   rows: [{ count }],
+  // } = await db.query('SELECT COUNT(*) FROM users');
+  // const isFirstAccount = Number(count) === 0;
+  // const role = isFirstAccount ? 'admin' : 'alumni';
+  const role = 'alumni';
   const hashedPassword = await hashPassword(password);
   const {
     rows: [user],
@@ -42,14 +42,9 @@ const registerUser = async (req, res) => {
     ]
   );
 
-  const token = createJWT({
-    userId: user.user_id,
-    name: user.name,
-    role: user.role_name,
-  });
   res
     .status(StatusCodes.CREATED)
-    .json({ msg: 'Utilisateur enregistré', token });
+    .json({ msg: 'Votre compte est en attente de validation ' });
 };
 
 //!
@@ -68,6 +63,9 @@ const loginUser = async (req, res) => {
 
   if (!user) {
     throw new BadRequestError('Identifiants invalides');
+  }
+  if (user.is_active === false) {
+    throw new BadRequestError('Votre compte est attente de validation');
   }
 
   const isPasswordCorrect = await comparePassword(password, user.password);
@@ -96,6 +94,7 @@ const loginUser = async (req, res) => {
 
 const registerCompagny = async (req, res) => {
   const { name, email, password, city, adress, description } = req.body;
+
   const hashedPassword = await hashPassword(password);
   const {
     rows: [compagny],
@@ -103,13 +102,10 @@ const registerCompagny = async (req, res) => {
     'INSERT INTO compagnies(name,email,password,city,adress,description)VALUES($1,$2,$3,$4,$5,$6) RETURNING *',
     [name, email, hashedPassword, city, adress, description]
   );
-  const token = createJWT({
-    compagnyId: compagny.compagny_id,
-    name: compagny.name,
-  });
+
   res
     .status(StatusCodes.CREATED)
-    .json({ msg: 'Utilisateur enregistré', token });
+    .json({ msg: 'Votre compte est en attente de validation' });
 };
 
 //! gestion de la connexion compagny
@@ -124,6 +120,9 @@ const loginCompagny = async (req, res) => {
   );
   if (!compagny) {
     throw new BadRequestError('Identifiants invalides');
+  }
+  if (compagny.is_active === false) {
+    throw new BadRequestError('Votre compte est attente de validation');
   }
 
   const isPasswordCorrect = await comparePassword(password, compagny.password);
