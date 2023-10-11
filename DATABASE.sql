@@ -51,10 +51,6 @@ CREATE TABLE user_stack(
 CREATE TABLE compagnies(
   compagny_id SERIAL PRIMARY KEY,
   name VARCHAR(50) NOT NULL, 
-  email VARCHAR(255) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  CHECK (char_length(name) >= 3 AND char_length(name) <= 50),
-  CHECK (char_length(password) >= 6),
   city VARCHAR(50) NOT NULL,
   adress VARCHAR(255),
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
