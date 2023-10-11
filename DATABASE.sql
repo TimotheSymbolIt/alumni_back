@@ -38,6 +38,7 @@ CREATE TABLE users(
   professional_experience TEXT,
   avatar_url VARCHAR(255),
   role_name VARCHAR(50) REFERENCES roles(name)
+  compagny_id INT REFERENCES compagnies(compagny_id)
 );
 
 
@@ -59,6 +60,7 @@ CREATE TABLE compagnies(
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   avatar_url VARCHAR(255),
   description TEXT
+
 );
 
 CREATE TABLE jobs(

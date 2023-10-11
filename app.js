@@ -9,7 +9,7 @@ const errorHandler = require('./middlewares/errorHandlerMiddleware.js');
 
 // routers
 
-const authCompagnyRouter = require('./routes/authCompagniesRoutes.js');
+//! const authCompagnyRouter = require('./routes/authCompagniesRoutes.js');
 const authUserRouter = require('./routes/authUsersRoutes.js');
 
 // const compagnyRouter = require('./routes/compagniesRoutes.js');
@@ -22,7 +22,7 @@ app.use(express.json());
 
 // route
 
-app.use('/api/v1/authCompagny', authCompagnyRouter);
+//! app.use('/api/v1/authCompagny', authCompagnyRouter);
 app.use('/api/v1/authUser', authUserRouter);
 // app.use('/api/v1/compagny', compagnyRouter);
 // app.use('/api/v1/event', eventRouter);

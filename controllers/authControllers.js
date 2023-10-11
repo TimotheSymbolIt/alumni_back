@@ -3,7 +3,9 @@ const db = require('../db');
 const { StatusCodes } = require('http-status-codes');
 const { createJWT } = require('../utils/tokenUtils.js');
 const { hashPassword, comparePassword } = require('../utils/passwordUtils.js');
-
+const {
+  checkIfEmailExist,
+} = require('../middlewares/authenticationMiddleware');
 //! gestion de l'enregistrement  utilisateur
 
 const registerUser = async (req, res) => {
@@ -17,7 +19,7 @@ const registerUser = async (req, res) => {
     city,
     professional_experience,
   } = req.body;
-
+  //
   // const {
   //   rows: [{ count }],
   // } = await db.query('SELECT COUNT(*) FROM users');
@@ -90,59 +92,59 @@ const loginUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
 };
 
-//! gestion de l'enregistrement  compagny
+// //! gestion de l'enregistrement  compagny
 
-const registerCompagny = async (req, res) => {
-  const { name, email, password, city, adress, description } = req.body;
+// const registerCompagny = async (req, res) => {
+//   const { name, email, password, city, adress, description } = req.body;
 
-  const hashedPassword = await hashPassword(password);
-  const {
-    rows: [compagny],
-  } = await db.query(
-    'INSERT INTO compagnies(name,email,password,city,adress,description)VALUES($1,$2,$3,$4,$5,$6) RETURNING *',
-    [name, email, hashedPassword, city, adress, description]
-  );
+//   const hashedPassword = await hashPassword(password);
+//   const {
+//     rows: [compagny],
+//   } = await db.query(
+//     'INSERT INTO compagnies(name,email,password,city,adress,description)VALUES($1,$2,$3,$4,$5,$6) RETURNING *',
+//     [name, email, hashedPassword, city, adress, description]
+//   );
 
-  res
-    .status(StatusCodes.CREATED)
-    .json({ msg: 'Votre compte est en attente de validation' });
-};
+//   res
+//     .status(StatusCodes.CREATED)
+//     .json({ msg: 'Votre compte est en attente de validation' });
+// };
 
-//! gestion de la connexion compagny
+// //! gestion de la connexion compagny
 
-const loginCompagny = async (req, res) => {
-  const { email, password } = req.body;
-  const {
-    rows: [compagny],
-  } = await db.query(
-    'SELECT compagny_id,name,password,avatar_url,is_active FROM compagnies WHERE email=$1',
-    [email]
-  );
-  if (!compagny) {
-    throw new BadRequestError('Identifiants invalides');
-  }
-  if (compagny.is_active === false) {
-    throw new BadRequestError('Votre compte est attente de validation');
-  }
+// const loginCompagny = async (req, res) => {
+//   const { email, password } = req.body;
+//   const {
+//     rows: [compagny],
+//   } = await db.query(
+//     'SELECT compagny_id,name,password,avatar_url,is_active FROM compagnies WHERE email=$1',
+//     [email]
+//   );
+//   if (!compagny) {
+//     throw new BadRequestError('Identifiants invalides');
+//   }
+//   if (compagny.is_active === false) {
+//     throw new BadRequestError('Votre compte est attente de validation');
+//   }
 
-  const isPasswordCorrect = await comparePassword(password, compagny.password);
+//   const isPasswordCorrect = await comparePassword(password, compagny.password);
 
-  if (!isPasswordCorrect) {
-    throw new BadRequestError('Identifiants invalides');
-  }
-  delete compagny.password;
+//   if (!isPasswordCorrect) {
+//     throw new BadRequestError('Identifiants invalides');
+//   }
+//   delete compagny.password;
 
-  if (!compagny.avatar_url) {
-    avatar = null;
-  }
-  const token = createJWT({
-    compagnyId: compagny.user_id,
-    name: compagny.name,
-    active: compagny.is_active,
-    avatar: avatar,
-  });
+//   if (!compagny.avatar_url) {
+//     avatar = null;
+//   }
+//   const token = createJWT({
+//     compagnyId: compagny.user_id,
+//     name: compagny.name,
+//     active: compagny.is_active,
+//     avatar: avatar,
+//   });
 
-  res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
-};
+//   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
+//registerCompagny, loginCompagny };
 
-module.exports = { registerUser, loginUser, registerCompagny, loginCompagny };
+module.exports = { registerUser, loginUser };
