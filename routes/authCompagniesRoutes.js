@@ -1,4 +1,4 @@
-// //! route de connexion des entreprises
+//! route de connexion des entreprises
 const { Router } = require('express');
 const router = Router();
 

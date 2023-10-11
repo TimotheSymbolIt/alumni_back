@@ -1,8 +1,8 @@
-// //! Route evenement
+//! Route evenement
 // const { Router } = require('express');
 // const router = Router();
 
-// //! routes des evenements
+//! routes des evenements
 
 // router.route('/').get(getAllEvents);
 

@@ -78,6 +78,6 @@ INSERT INTO roles(name) VALUES('admin');
 
 
 // trainings
-INSERT INTO trainings(name) VALUES ('WEB GENUIS');
-INSERT INTO trainings(name) VALUES ('WEB GENUIS');
-INSERT INTO trainings(name) VALUES ('WEB GENUIS');
+INSERT INTO trainings(name) VALUES ('developpeur web');
+INSERT INTO trainings(name) VALUES ('bachelor');
+INSERT INTO trainings(name) VALUES ('assistant·e ressources humaines');

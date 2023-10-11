@@ -1,9 +1,9 @@
 // const { Router } = require('express');
 // const router = Router();
-// // //! routes des compagnies
+//! routes des compagnies
 // router.route('/').get(getAllCompagnies);
 
-// // auth require
+// auth require
 // router.route('/').post(createCompagny);
 // router
 //   .route('/:id')
