@@ -1,9 +1,9 @@
-//! routes des utilisateurs
-const { Router } = require('express');
-const router = Router();
+// //! routes des utilisateurs
+// const { Router } = require('express');
+// const router = Router();
 
-router.route('/').get(getAllUsers);
+// router.route('/').get(getAllUsers);
 
-// auth require
-router.route('/').post(createUser);
-router.route('/:id').get(getSingleUser).update(updateUser).delete(deleteUser);
+// // auth require
+// router.route('/').post(createUser);
+// router.route('/:id').get(getSingleUser).update(updateUser).delete(deleteUser);

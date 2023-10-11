@@ -1,8 +1,13 @@
-//! route de connexion des entreprises
-const { Router } = require('express');
-const router = Router();
+// //! route de connexion des entreprises
+// const { Router } = require('express');
+// const router = Router();
 
-router.post('/registerCompagny', registerCompagny);
-router.post('/loginCompagny', loginCompagny);
+// const {
+//   registerCompagny,
+//   loginCompagny,
+// } = require('../controllers/authControllers');
 
-module.exports = router;
+// router.post('/registerCompagny', registerCompagny);
+// router.post('/loginCompagny', loginCompagny);
+
+// module.exports = router;
