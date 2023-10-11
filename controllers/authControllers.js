@@ -19,13 +19,13 @@ const registerUser = async (req, res) => {
     city,
     professional_experience,
   } = req.body;
-  //
-  // const {
-  //   rows: [{ count }],
-  // } = await db.query('SELECT COUNT(*) FROM users');
-  // const isFirstAccount = Number(count) === 0;
-  // const role = isFirstAccount ? 'admin' : 'alumni';
-  const role = 'alumni';
+
+  const {
+    rows: [{ count }],
+  } = await db.query('SELECT COUNT(*) FROM users');
+  const isFirstAccount = Number(count) === 0;
+  const role = isFirstAccount ? 'admin' : 'alumni';
+
   const hashedPassword = await hashPassword(password);
   const {
     rows: [user],
@@ -80,6 +80,9 @@ const loginUser = async (req, res) => {
   if (!user.avatar_url) {
     avatar = null;
   }
+  if (!user.compagny_id) {
+    compagny_id = null;
+  }
 
   const token = createJWT({
     userId: user.user_id,
@@ -87,6 +90,7 @@ const loginUser = async (req, res) => {
     role: user.role_name,
     active: user.is_active,
     avatar: avatar,
+    compagny_id: compagny_id,
   });
 
   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
