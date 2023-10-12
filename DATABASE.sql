@@ -6,7 +6,7 @@ CREATE TABLE trainings(
 );
 
 CREATE TABLE roles (
-    name  VARCHAR(50) PRIMARY KEY
+  name  VARCHAR(50) PRIMARY KEY
 );
 
 CREATE TABLE stacks(
@@ -56,7 +56,6 @@ CREATE TABLE compagnies(
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   avatar_url VARCHAR(255),
   description TEXT
-
 );
 
 CREATE TABLE jobs(
