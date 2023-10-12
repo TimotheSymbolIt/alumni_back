@@ -15,9 +15,8 @@ const authenticateUser = (req, _res, next) => {
       token,
       process.env.JWT_SECRET
     );
-    req.user = { name, userId, role, active, avatar };
+    req.user = { userId, name, role, active, avatar, compagny_id };
 
-    console.log(req.user);
     next();
   } catch (error) {
     throw new UnauthenticatedError('Authentification non valide');
