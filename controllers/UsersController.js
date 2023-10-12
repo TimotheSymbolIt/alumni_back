@@ -9,13 +9,12 @@ const getAllUsers = async (_req, res) => {
   const {
     rows: [user],
   } = await db.query(`
-    SELECT users.*, trainings.name AS training_name
-    FROM users
-    LEFT JOIN trainings ON users.training_id = trainings.training_id
-    WHERE users.is_active = true AND users.compagny_id IS NULL
-  `);
-  delete user.password, delete user.email;
-  delete user.training_id;
+  SELECT users.*
+  FROM users
+  WHERE users.is_active = true AND users.compagny_id IS NULL
+`);
+  delete user.password;
+
   res.status(StatusCodes.OK).json({ user });
 };
 
@@ -58,6 +57,9 @@ const getSingleUser = async (req, res) => {
     'SELECT * FROM users WHERE user_id = $1 AND is_active = true',
     [id]
   );
+
+  delete user.password;
+
   res.status(StatusCodes.OK).json({ user });
 };
 
