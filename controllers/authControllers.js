@@ -3,9 +3,7 @@ const db = require('../db');
 const { StatusCodes } = require('http-status-codes');
 const { createJWT } = require('../utils/tokenUtils.js');
 const { hashPassword, comparePassword } = require('../utils/passwordUtils.js');
-const {
-  checkIfEmailExist,
-} = require('../middlewares/authenticationMiddleware');
+
 //! gestion de l'enregistrement  utilisateur
 
 const registerUser = async (req, res) => {
@@ -27,10 +25,11 @@ const registerUser = async (req, res) => {
   const role = isFirstAccount ? 'admin' : 'alumni';
 
   const hashedPassword = await hashPassword(password);
+
   const {
     rows: [user],
   } = await db.query(
-    'INSERT INTO users (name, email, password, training_id,  description,age,city,professional_experience,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',
+    'INSERT INTO users (name, email, password, training_id, description,age,city,professional_experience,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',
     [
       name,
       email,
@@ -48,8 +47,6 @@ const registerUser = async (req, res) => {
     .status(StatusCodes.CREATED)
     .json({ msg: 'Votre compte est en attente de validation ' });
 };
-
-//!
 
 //! gestion de la connexion utilisateur
 
