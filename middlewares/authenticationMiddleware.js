@@ -1,4 +1,3 @@
-const db = require('../db');
 const { UnauthenticatedError } = require('../errors');
 const jwt = require('jsonwebtoken');
 
@@ -17,6 +16,8 @@ const authenticateUser = (req, _res, next) => {
       process.env.JWT_SECRET
     );
     req.user = { name, userId, role, active, avatar };
+
+    console.log(req.user);
     next();
   } catch (error) {
     throw new UnauthenticatedError('Authentification non valide');
@@ -25,7 +26,7 @@ const authenticateUser = (req, _res, next) => {
 
 const authorizePermissions = (...roles) => {
   return (req, _res, next) => {
-    if (roles.includes(req.user.role)) {
+    if (!roles.includes(req.user.role)) {
       throw new UnauthenticatedError('Accès non autorisé');
     }
 
