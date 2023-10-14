@@ -86,8 +86,8 @@ const loginUser = async (req, res) => {
     name: user.name,
     role: user.role_name,
     active: user.is_active,
-    avatar: avatar,
-    compagny_id: compagny_id,
+    avatar: user.avatar_url,
+    compagny_id: user.compagny_id,
   });
 
   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
