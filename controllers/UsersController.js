@@ -18,6 +18,17 @@ const getAllUsers = async (_req, res) => {
   res.status(StatusCodes.OK).json({ user });
 };
 
+// retourner l'utilisateur courant
+const getCurrentUser = async (req, res) => {
+  const userId = req.user.userId;
+  const {
+    rows: [user],
+  } = await db.query('SELECT * FROM users WHERE user_id = $1', [userId]);
+  delete user.password;
+  console.log(user);
+  res.status(StatusCodes.OK).json({ user });
+};
+
 // Retourner tout les utilisateurs inactifs
 const getAllInactiveUsers = async (_req, res) => {
   const {
@@ -120,7 +131,6 @@ const updateUser = async (req, res) => {
   );
 
   // recrée le token
-
   const token = createJWT({
     userId: user.user_id,
     name: user.name,
@@ -145,6 +155,7 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getCurrentUser,
   getAllInactiveUsers,
   updateActivationUser,
   getSingleUser,

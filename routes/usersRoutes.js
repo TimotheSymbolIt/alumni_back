@@ -9,6 +9,7 @@ const {
 
 const {
   getAllUsers,
+  getCurrentUser,
   getAllInactiveUsers,
   updateActivationUser,
   getSingleUser,
@@ -22,6 +23,8 @@ const {
 } = require('../middlewares/validationMiddleware.js');
 
 router.route('/').get(getAllUsers);
+
+router.use(authenticateUser).route('/currentUser').get(getCurrentUser);
 
 router
   .use(authenticateUser)
