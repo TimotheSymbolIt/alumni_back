@@ -75,10 +75,10 @@ const loginUser = async (req, res) => {
   delete user.password;
 
   if (!user.avatar_url) {
-    avatar = null;
+    user.avatar = null;
   }
   if (!user.compagny_id) {
-    compagny_id = null;
+    user.compagny_id = null;
   }
 
   const token = createJWT({
@@ -86,8 +86,6 @@ const loginUser = async (req, res) => {
     name: user.name,
     role: user.role_name,
     active: user.is_active,
-    avatar: user.avatar_url,
-    compagny_id: user.compagny_id,
   });
 
   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
