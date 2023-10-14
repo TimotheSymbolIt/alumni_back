@@ -22,10 +22,19 @@ const getAllUsers = async (_req, res) => {
 const getCurrentUser = async (req, res) => {
   const userId = req.user.userId;
   const {
-    rows: [user],
+    rows: [userData],
   } = await db.query('SELECT * FROM users WHERE user_id = $1', [userId]);
-  delete user.password;
-  console.log(user);
+
+  delete userData.password;
+
+  const user = {
+    name: userData.name,
+    role: userData.role_name,
+    active: userData.is_active,
+    avatar: userData.avatar_url,
+    compagny_id: userData.compagny_id,
+  };
+
   res.status(StatusCodes.OK).json({ user });
 };
 
