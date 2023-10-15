@@ -35,7 +35,7 @@ const getCurrentUser = async (req, res) => {
     compagny_id: userData.compagny_id,
   };
 
-  res.status(StatusCodes.OK).json({ user });
+  res.status(StatusCodes.OK).json(user);
 };
 
 // Retourner tout les utilisateurs inactifs
