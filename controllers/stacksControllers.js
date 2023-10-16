@@ -3,7 +3,7 @@ const { StatusCodes } = require('http-status-codes');
 
 //! route utilisable sans connexion
 
-//getAllstacks
+//getAllStacks
 const getAllStacks = async (_req, res) => {
   const { rows: stacks } = await db.query('SELECT * FROM stacks');
   res.status(StatusCodes.OK).json({ stacks });

@@ -138,10 +138,21 @@ const validateStackInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
 ]);
 
+const validateCompagnyInput = withValidationErrors([
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('Le nom de la société est requis')
+    .escape(),
+  body('city').trim().notEmpty().withMessage('La ville est requise').escape(),
+  body('adress').trim().escape(),
+  body('description').trim().escape(),
+]);
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
   validateUserParams,
   validateUpdateUserInput,
   validateStackInput,
+  validateCompagnyInput,
 };
