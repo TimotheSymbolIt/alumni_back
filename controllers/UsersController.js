@@ -20,6 +20,26 @@ WHERE users.is_active = true AND users.compagny_id IS NULL
   res.status(StatusCodes.OK).json({ users });
 };
 
+// retourner l'utilisateur courant
+const getCurrentUser = async (req, res) => {
+  const userId = req.user.userId;
+  const {
+    rows: [userData],
+  } = await db.query('SELECT * FROM users WHERE user_id = $1', [userId]);
+
+  delete userData.password;
+
+  const user = {
+    name: userData.name,
+    role: userData.role_name,
+    active: userData.is_active,
+    avatar: userData.avatar_url,
+    compagny_id: userData.compagny_id,
+  };
+
+  res.status(StatusCodes.OK).json({ user });
+};
+
 // Retourner tout les utilisateurs inactifs
 const getAllInactiveUsers = async (_req, res) => {
   const {
@@ -126,7 +146,6 @@ const updateUser = async (req, res) => {
   );
 
   // recrée le token
-
   const token = createJWT({
     userId: user.user_id,
     name: user.name,
@@ -151,6 +170,7 @@ const deleteUser = async (req, res) => {
 
 module.exports = {
   getAllUsers,
+  getCurrentUser,
   getAllInactiveUsers,
   updateActivationUser,
   getSingleUser,

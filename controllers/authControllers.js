@@ -76,10 +76,10 @@ const loginUser = async (req, res) => {
   delete user.password;
 
   if (!user.avatar_url) {
-    avatar = null;
+    user.avatar = null;
   }
   if (!user.compagny_id) {
-    compagny_id = null;
+    user.compagny_id = null;
   }
   if (!user.training_id) {
     training_id = null;
@@ -91,8 +91,6 @@ const loginUser = async (req, res) => {
     training_id: user.training_id,
     role: user.role_name,
     active: user.is_active,
-    avatar: avatar,
-    compagny_id: compagny_id,
   });
 
   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });
