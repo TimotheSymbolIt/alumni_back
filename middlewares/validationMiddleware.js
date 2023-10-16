@@ -75,35 +75,6 @@ const validateLoginInput = withValidationErrors([
     .escape(),
 ]);
 
-const validateUserParams = withValidationErrors(
-  param('id').custom(async (id, { req }) => {
-    if (isNaN(Number(id))) {
-      throw new Error('Id non valide');
-    }
-    const {
-      rows: [user],
-    } = await db.query(
-      'SELECT user_id, role_name FROM users WHERE user_id = $1',
-      [id]
-    );
-
-    if (!user) {
-      throw new Error(`Pas d'utilisateur avec l'id ${id}`);
-    }
-
-    const isOwner = req.user.userId === user.user_id;
-    const isAdminOrModerator = ['admin', 'moderator'].includes(req.user.role);
-    const isTargetAdmin = user.role_name === 'admin';
-
-    if (
-      !isOwner &&
-      (!isAdminOrModerator || (isAdminOrModerator && isTargetAdmin))
-    ) {
-      throw new Error('Accès non autorisé');
-    }
-  })
-);
-
 const validateUpdateUserInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
   body('email')
@@ -128,11 +99,9 @@ const validateStackInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
 ]);
 
-
 const validateTrainingInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
 ]);
-
 
 const validateCompagnyInput = withValidationErrors([
   body('name')
@@ -145,12 +114,18 @@ const validateCompagnyInput = withValidationErrors([
   body('description').trim().escape(),
 ]);
 
+const validateEventInput = withValidationErrors([
+  body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
+  body('description').trim().escape(),
+  body('date').trim().escape(),
+]);
+
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
-  validateUserParams,
   validateUpdateUserInput,
   validateStackInput,
   validateTrainingInput,
   validateCompagnyInput,
+  validateEventInput,
 };

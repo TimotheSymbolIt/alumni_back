@@ -133,7 +133,6 @@ const getSingleUser = async (req, res) => {
 
 // updateUser
 const updateUser = async (req, res) => {
-  const { id } = req.params;
   const {
     name,
     email,
