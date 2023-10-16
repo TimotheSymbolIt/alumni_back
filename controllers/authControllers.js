@@ -7,16 +7,8 @@ const { hashPassword, comparePassword } = require('../utils/passwordUtils.js');
 //! gestion de l'enregistrement  utilisateur
 
 const registerUser = async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    training_id,
-    description,
-    age,
-    city,
-    professional_experience,
-  } = req.body;
+  const { name, email, password, training_id, description, compagny_id } =
+    req.body;
 
   const {
     rows: [{ count }],
@@ -29,7 +21,7 @@ const registerUser = async (req, res) => {
   const {
     rows: [user],
   } = await db.query(
-    'INSERT INTO users (name, email,is_active, password, training_id, description,age,city,professional_experience,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',
+    'INSERT INTO users (name, email,is_active, password, training_id,description, compagny_id,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
     [
       name,
       email,
@@ -37,9 +29,7 @@ const registerUser = async (req, res) => {
       hashedPassword,
       training_id,
       description,
-      age,
-      city,
-      professional_experience,
+      compagny_id,
       role,
     ]
   );
