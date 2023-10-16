@@ -4,18 +4,31 @@ const { StatusCodes } = require('http-status-codes');
 const { hashPassword } = require('../utils/passwordUtils.js');
 const { createJWT } = require('../utils/tokenUtils.js');
 
-// Retourner tout les utilisateurs actifs qui n'ont pas de compagnie
 const getAllUsers = async (_req, res) => {
-  const {
-    rows: [users],
-  } = await db.query(`
-  SELECT users.*, stacks.stack_name
-FROM users
-JOIN user_stack ON users.user_id = user_stack.user_id
-JOIN stacks ON user_stack.stack_id = stacks.stack_id
-WHERE users.is_active = true AND users.compagny_id IS NULL 
-`);
-  delete users.password;
+  const userQuery = `
+    SELECT
+      u.user_id,
+      u.name,
+      u.email,
+      u.role_name,
+      u.avatar_url,
+      u.description,
+      u.age,
+      u.city,
+      u.professional_experience,
+      c.compagny_name,
+      t.training_name,
+      (SELECT json_agg(s.stack_name) FROM stacks s
+        JOIN user_stack us ON s.stack_id = us.stack_id
+        WHERE us.user_id = u.user_id
+      ) AS stacks
+    FROM users u
+    LEFT JOIN compagnies c ON u.compagny_id = c.compagny_id
+    LEFT JOIN trainings t ON u.training_id = t.training_id
+    WHERE u.is_active = true AND u.compagny_id IS NULL;
+  `;
+
+  const { rows: users } = await db.query(userQuery);
 
   res.status(StatusCodes.OK).json({ users });
 };
@@ -23,24 +36,41 @@ WHERE users.is_active = true AND users.compagny_id IS NULL
 // retourner l'utilisateur courant
 const getCurrentUser = async (req, res) => {
   const userId = req.user.userId;
-  const {
-    rows: [userData],
-  } = await db.query('SELECT * FROM users WHERE user_id = $1', [userId]);
 
-  delete userData.password;
+  const userQuery = `
+    SELECT
+      u.name,
+      u.role_name,
+      u.is_active,
+      u.avatar_url,
+      c.compagny_name,
+      t.training_name,
+      (SELECT json_agg(stack_name) FROM stacks WHERE stack_id IN (SELECT stack_id FROM user_stack WHERE user_id = $1)) AS stacks
+    FROM users u
+    LEFT JOIN compagnies c ON u.compagny_id = c.compagny_id
+    LEFT JOIN trainings t ON u.training_id = t.training_id
+    WHERE u.user_id = $1;
+  `;
+
+  const {
+    rows: [result],
+  } = await db.query(userQuery, [userId]);
+
+  delete result.password;
 
   const user = {
-    name: userData.name,
-    role: userData.role_name,
-    active: userData.is_active,
-    avatar: userData.avatar_url,
-    compagny_id: userData.compagny_id,
+    name: result.name,
+    role: result.role_name,
+    active: result.is_active,
+    avatar: result.avatar_url,
+    compagny_name: result.compagny_name,
+    training_name: result.training_name,
+    stacks: result.stacks,
   };
 
   res.status(StatusCodes.OK).json({ user });
 };
 
-// Retourner tout les utilisateurs inactifs
 const getAllInactiveUsers = async (_req, res) => {
   const {
     rows: [users],
@@ -55,10 +85,8 @@ const getAllInactiveUsers = async (_req, res) => {
   res.status(StatusCodes.OK).json({ users, count });
 };
 
-// modifier l'activation de l'utilisateur
 const updateActivationUser = async (req, res) => {
-  const { id } = req.params;
-  const { is_active } = req.body;
+  const { id, is_active } = req.body;
 
   const {
     rows: [user],
@@ -70,23 +98,37 @@ const updateActivationUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user });
 };
 
-// getSingleUser
-
 const getSingleUser = async (req, res) => {
   const { id } = req.params;
-  const {
-    rows: [user],
-  } = await db.query(
-    'SELECT * FROM users WHERE user_id = $1 AND is_active = true',
-    [id]
-  );
-  const {
-    // voir jointure pour récupérer les noms des stack de l'utilisateur
-    rows: [stacks],
-  } = await db.query('SELECT  ');
-  delete user.password;
 
-  res.status(StatusCodes.OK).json({ user });
+  const userQuery = `
+    SELECT
+      u.user_id,
+      u.name,
+      u.email,
+      u.role_name,
+      u.avatar_url,
+      u.description,
+      u.age,
+      u.city,
+      u.professional_experience,
+      c.compagny_name,
+      t.training_name,
+      (SELECT json_agg(stack_name) FROM stacks WHERE stack_id IN (SELECT stack_id FROM user_stack WHERE user_id = $1)) AS stacks
+    FROM users u
+    LEFT JOIN compagnies c ON u.compagny_id = c.compagny_id
+    LEFT JOIN trainings t ON u.training_id = t.training_id
+    WHERE u.user_id = $1 AND u.is_active = true AND u.compagny_id IS NULL
+  `;
+
+  const {
+    rows: [result],
+  } = await db.query(userQuery, [id]);
+
+  // Supprimez le mot de passe des données utilisateur
+  delete result.password;
+
+  res.status(StatusCodes.OK).json({ user: result });
 };
 
 // updateUser
@@ -151,8 +193,6 @@ const updateUser = async (req, res) => {
     name: user.name,
     role: user.role_name,
     active: user.is_active,
-    avatar: user.avatar_url,
-    compagny_id: compagny_id,
   });
 
   res

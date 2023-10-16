@@ -52,14 +52,11 @@ CREATE TABLE users(
   training_id INT REFERENCES trainings(training_id)
 );
 
-
 CREATE TABLE user_stack(
   user_id INT REFERENCES users(user_id),
   stack_id INT REFERENCES stacks(stack_id),
   PRIMARY KEY (user_id,stack_id)
 );
-
-
 
 CREATE TABLE jobs(
   job_id SERIAL PRIMARY KEY,
@@ -68,8 +65,6 @@ CREATE TABLE jobs(
   compagny_id INT REFERENCES compagnies(compagny_id),
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
-
 
 INSERT INTO roles(name) VALUES('alumni');
 INSERT INTO roles(name) VALUES('mentor');
