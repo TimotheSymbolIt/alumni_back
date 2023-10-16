@@ -11,7 +11,7 @@ const getAllCompagnies = async (req, res) => {
 
 // getALLInactivCompagnies
 
-const getALLInactiveCompagnies = async (_req, res) => {
+const getAllInactiveCompagnies = async (_req, res) => {
   const { rows: compagnies } = await db.query(
     'SELECT * FROM compagnies WHERE is_active = false'
   );
@@ -36,12 +36,11 @@ const updateActivationCompagnies = async (req, res) => {
 };
 // UpdateCompagny
 const updateCompagny = async (req, res) => {
-  const { compagny_name, city, adress, avatar_url, description, compagny_id } =
-    req.body;
+  const { name, city, adress, avatar_url, description, compagny_id } = req.body;
 
   await db.query(
     'UPDATE compagnies SET compagny_name=$1, city=$2, adress=$3, avatar_url=$4, description=$5 WHERE compagny_id=$6 ',
-    [compagny_name, city, adress, avatar_url, description, compagny_id]
+    [name, city, adress, avatar_url, description, compagny_id]
   );
 
   res.status(StatusCodes.CREATED).json({ msg: 'Société  bien modifié' });
@@ -57,17 +56,17 @@ const deleteCompagny = async (req, res) => {
 // CreateCompagny
 
 const CreateCompagny = async (req, res) => {
-  const { compagny_name, city, adress, avatar_url, description } = req.body;
+  const { name, city, adress, avatar_url, description } = req.body;
   await db.query(
     'INSERT INTO compagnies(compagny_name,city,adress,avatar_url,description) VALUES($1,$2,$3,$4,$5)RETURNING *',
-    [compagny_name, city, adress, avatar_url, description]
+    [name, city, adress, avatar_url, description]
   );
   res.status(StatusCodes.OK).json({ msg: 'compagnie créé' });
 };
 
 module.exports = {
   getAllCompagnies,
-  getALLInactiveCompagnies,
+  getAllInactiveCompagnies,
   updateActivationCompagnies,
   updateCompagny,
   deleteCompagny,

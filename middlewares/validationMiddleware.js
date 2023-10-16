@@ -139,7 +139,7 @@ const validateStackInput = withValidationErrors([
 ]);
 
 const validateCompagnyInput = withValidationErrors([
-  body('compagny_name')
+  body('name')
     .trim()
     .notEmpty()
     .withMessage('Le nom de la société est requis')

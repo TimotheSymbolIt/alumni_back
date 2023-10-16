@@ -3,7 +3,7 @@ const router = Router();
 
 const {
   getAllCompagnies,
-  getALLInactiveCompagnies,
+  getAllInactiveCompagnies,
   updateActivationCompagnies,
   updateCompagny,
   deleteCompagny,
@@ -54,7 +54,7 @@ router
 router
   .use(authenticateUser)
   .route('/compagny/activation')
-  .get(authorizePermissions('admin', 'moderator'), getALLInactiveCompagnies);
+  .get(authorizePermissions('admin', 'moderator'), getAllInactiveCompagnies);
 
 // activation des compagnies inactives
 
