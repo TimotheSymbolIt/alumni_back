@@ -12,7 +12,7 @@ const errorHandler = require('./middlewares/errorHandlerMiddleware.js');
 //! const authCompagnyRouter = require('./routes/authCompagniesRoutes.js');
 const authUserRouter = require('./routes/authUsersRoutes.js');
 
-// const compagnyRouter = require('./routes/compagniesRoutes.js');
+const compagnyRouter = require('./routes/compagniesRoutes.js');
 // const eventRouter = require('./routes/eventsRoutes.js');
 // const jobRouter = require('./routes/jobsRoutes.js');
 const stackRouter = require('./routes/stacksRoutes.js');
@@ -24,7 +24,7 @@ app.use(express.json());
 
 //! app.use('/api/v1/authCompagny', authCompagnyRouter);
 app.use('/api/v1/authUser', authUserRouter);
-// app.use('/api/v1/compagny', compagnyRouter);
+app.use('/api/v1/compagnies', compagnyRouter);
 // app.use('/api/v1/event', eventRouter);
 // app.use('/api/v1/job', jobRouter);
 app.use('/api/v1/stacks', stackRouter);
