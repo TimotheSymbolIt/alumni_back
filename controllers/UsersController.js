@@ -7,30 +7,32 @@ const { createJWT } = require('../utils/tokenUtils.js');
 // Retourner tout les utilisateurs actifs qui n'ont pas de compagnie
 const getAllUsers = async (_req, res) => {
   const {
-    rows: [user],
+    rows: [users],
   } = await db.query(`
-  SELECT users.*
-  FROM users
-  WHERE users.is_active = true AND users.compagny_id IS NULL
+  SELECT users.*, stacks.stack_name
+FROM users
+JOIN user_stack ON users.user_id = user_stack.user_id
+JOIN stacks ON user_stack.stack_id = stacks.stack_id
+WHERE users.is_active = true AND users.compagny_id IS NULL 
 `);
-  delete user.password;
+  delete users.password;
 
-  res.status(StatusCodes.OK).json({ user });
+  res.status(StatusCodes.OK).json({ users });
 };
 
 // Retourner tout les utilisateurs inactifs
 const getAllInactiveUsers = async (_req, res) => {
   const {
-    rows: [user],
+    rows: [users],
   } = await db.query('SELECT * FROM users WHERE is_active = false');
 
-  delete user.password;
+  delete users.password;
   const {
     rows: [count],
   } = await db.query(
     'SELECT COUNT(*) AS user_count FROM users WHERE is_active = false'
   );
-  res.status(StatusCodes.OK).json({ user, count });
+  res.status(StatusCodes.OK).json({ users, count });
 };
 
 // modifier l'activation de l'utilisateur
@@ -49,6 +51,7 @@ const updateActivationUser = async (req, res) => {
 };
 
 // getSingleUser
+
 const getSingleUser = async (req, res) => {
   const { id } = req.params;
   const {
@@ -57,7 +60,10 @@ const getSingleUser = async (req, res) => {
     'SELECT * FROM users WHERE user_id = $1 AND is_active = true',
     [id]
   );
-
+  const {
+    // voir jointure pour récupérer les noms des stack de l'utilisateur
+    rows: [stacks],
+  } = await db.query('SELECT  ');
   delete user.password;
 
   res.status(StatusCodes.OK).json({ user });

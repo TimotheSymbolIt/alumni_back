@@ -23,16 +23,17 @@ const registerUser = async (req, res) => {
   } = await db.query('SELECT COUNT(*) FROM users');
   const isFirstAccount = Number(count) === 0;
   const role = isFirstAccount ? 'admin' : 'alumni';
-
+  const is_active = isFirstAccount ? true : false;
   const hashedPassword = await hashPassword(password);
 
   const {
     rows: [user],
   } = await db.query(
-    'INSERT INTO users (name, email, password, training_id, description,age,city,professional_experience,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',
+    'INSERT INTO users (name, email,is_active, password, training_id, description,age,city,professional_experience,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *',
     [
       name,
       email,
+      is_active,
       hashedPassword,
       training_id,
       description,
@@ -80,10 +81,14 @@ const loginUser = async (req, res) => {
   if (!user.compagny_id) {
     compagny_id = null;
   }
+  if (!user.training_id) {
+    training_id = null;
+  }
 
   const token = createJWT({
     userId: user.user_id,
     name: user.name,
+    training_id: user.training_id,
     role: user.role_name,
     active: user.is_active,
     avatar: avatar,
