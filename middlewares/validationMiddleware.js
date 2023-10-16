@@ -137,9 +137,14 @@ const validateUpdateUserInput = withValidationErrors([
   body('professional_experience').trim().escape(),
 ]);
 
+const validateStackInput = withValidationErrors([
+  body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
+]);
+
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
   validateUserParams,
   validateUpdateUserInput,
+  validateStackInput,
 };

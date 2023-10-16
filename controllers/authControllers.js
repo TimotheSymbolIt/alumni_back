@@ -57,7 +57,7 @@ const loginUser = async (req, res) => {
   const {
     rows: [user],
   } = await db.query(
-    'SELECT name, user_id, password, role_name,is_active,avatar_url FROM users WHERE email = $1',
+    'SELECT name, user_id, password, role_name,is_active FROM users WHERE email = $1',
     [email]
   );
 
@@ -75,20 +75,9 @@ const loginUser = async (req, res) => {
   }
   delete user.password;
 
-  if (!user.avatar_url) {
-    user.avatar = null;
-  }
-  if (!user.compagny_id) {
-    user.compagny_id = null;
-  }
-  if (!user.training_id) {
-    training_id = null;
-  }
-
   const token = createJWT({
     userId: user.user_id,
     name: user.name,
-    training_id: user.training_id,
     role: user.role_name,
     active: user.is_active,
   });

@@ -42,14 +42,14 @@ CREATE TABLE users(
   password VARCHAR(255) NOT NULL,
   CHECK (char_length(name) >= 3 AND char_length(name) <= 50),
   CHECK (char_length(password) >= 6),
-  training_id INT REFERENCES trainings(training_id),
   description TEXT,
-  age INT NOT NULL,
-  city VARCHAR(50) NOT NULL,
+  age INT ,
+  city VARCHAR(50),
   professional_experience TEXT,
   avatar_url VARCHAR(255),
   role_name VARCHAR(50) REFERENCES roles(name),
-  compagny_id INT REFERENCES compagnies(compagny_id)
+  compagny_id INT REFERENCES compagnies(compagny_id),
+  training_id INT REFERENCES trainings(training_id)
 );
 
 
