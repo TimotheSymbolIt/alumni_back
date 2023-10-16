@@ -57,9 +57,7 @@ const validateRegisterInput = withValidationErrors([
     .notEmpty()
     .withMessage('Le mot de passe est requis')
     .escape(),
-  body('training_id').trim().isInt({ min: 0 }).escape(),
   body('description').trim().escape(),
-  body('compagny_id').trim().isInt({ min: 0 }).escape(),
 ]);
 
 const validateLoginInput = withValidationErrors([

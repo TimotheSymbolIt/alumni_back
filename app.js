@@ -11,11 +11,11 @@ const errorHandler = require('./middlewares/errorHandlerMiddleware.js');
 
 //! const authCompagnyRouter = require('./routes/authCompagniesRoutes.js');
 const authUserRouter = require('./routes/authUsersRoutes.js');
-
-const compagnyRouter = require('./routes/compagniesRoutes.js');
+const rolesRouter = require('./routes/rolesRoutes.js');
+// const compagnyRouter = require('./routes/compagniesRoutes.js');
 // const eventRouter = require('./routes/eventsRoutes.js');
 // const jobRouter = require('./routes/jobsRoutes.js');
-const stackRouter = require('./routes/stacksRoutes.js');
+// const stackRouter = require('./routes/stacksRoutes.js');
 // const trainingRouter = require('./routes/trainingsRoutes.js');
 const userRouter = require('./routes/usersRoutes.js');
 app.use(express.json());
@@ -24,10 +24,11 @@ app.use(express.json());
 
 //! app.use('/api/v1/authCompagny', authCompagnyRouter);
 app.use('/api/v1/authUser', authUserRouter);
-app.use('/api/v1/compagnies', compagnyRouter);
+app.use('/api/v1/roles', rolesRouter);
+// app.use('/api/v1/compagny', compagnyRouter);
 // app.use('/api/v1/event', eventRouter);
 // app.use('/api/v1/job', jobRouter);
-app.use('/api/v1/stacks', stackRouter);
+// app.use('/api/v1/stack', stackRouter);
 // app.use('/api/v1/training', trainingRouter);
 app.use('/api/v1/users', userRouter);
 
