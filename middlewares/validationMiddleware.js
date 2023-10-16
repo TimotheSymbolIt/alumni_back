@@ -58,13 +58,8 @@ const validateRegisterInput = withValidationErrors([
     .withMessage('Le mot de passe est requis')
     .escape(),
   body('training_id').trim().isInt({ min: 0 }).escape(),
-  body('age')
-    .trim()
-    .notEmpty()
-    .withMessage('L age est requis')
-    .isInt({ min: 0 })
-    .escape(),
-  body('city').trim().notEmpty().withMessage('La ville est requise').escape(),
+  body('description').trim().escape(),
+  body('compagny_id').trim().isInt({ min: 0 }).escape(),
 ]);
 
 const validateLoginInput = withValidationErrors([
@@ -125,7 +120,7 @@ const validateUpdateUserInput = withValidationErrors([
     .notEmpty()
     .withMessage('Le mot de passe est requis')
     .escape(),
-  body('training_id').trim().isInt({ min: 0 }).escape(),
+
   body('description').trim().escape(),
   body('age')
     .trim()
@@ -135,6 +130,12 @@ const validateUpdateUserInput = withValidationErrors([
     .escape(),
   body('city').trim().notEmpty().withMessage('La ville est requise').escape(),
   body('professional_experience').trim().escape(),
+  body('compagny_id').trim().isInt({ min: 0 }).escape(),
+  body('training_id').trim().isInt({ min: 0 }).escape(),
+]);
+
+const validateStackInput = withValidationErrors([
+  body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
 ]);
 
 module.exports = {
@@ -142,4 +143,5 @@ module.exports = {
   validateLoginInput,
   validateUserParams,
   validateUpdateUserInput,
+  validateStackInput,
 };

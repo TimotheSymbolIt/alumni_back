@@ -7,38 +7,29 @@ const { hashPassword, comparePassword } = require('../utils/passwordUtils.js');
 //! gestion de l'enregistrement  utilisateur
 
 const registerUser = async (req, res) => {
-  const {
-    name,
-    email,
-    password,
-    training_id,
-    description,
-    age,
-    city,
-    professional_experience,
-  } = req.body;
+  const { name, email, password, training_id, description, compagny_id } =
+    req.body;
 
   const {
     rows: [{ count }],
   } = await db.query('SELECT COUNT(*) FROM users');
   const isFirstAccount = Number(count) === 0;
   const role = isFirstAccount ? 'admin' : 'alumni';
-
+  const is_active = isFirstAccount ? true : false;
   const hashedPassword = await hashPassword(password);
 
   const {
     rows: [user],
   } = await db.query(
-    'INSERT INTO users (name, email, password, training_id, description,age,city,professional_experience,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *',
+    'INSERT INTO users (name, email,is_active, password, training_id,description, compagny_id,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
     [
       name,
       email,
+      is_active,
       hashedPassword,
       training_id,
       description,
-      age,
-      city,
-      professional_experience,
+      compagny_id,
       role,
     ]
   );
@@ -56,7 +47,7 @@ const loginUser = async (req, res) => {
   const {
     rows: [user],
   } = await db.query(
-    'SELECT name, user_id, password, role_name,is_active,avatar_url FROM users WHERE email = $1',
+    'SELECT name, user_id, password, role_name,is_active FROM users WHERE email = $1',
     [email]
   );
 
@@ -73,13 +64,6 @@ const loginUser = async (req, res) => {
     throw new BadRequestError('Identifiants invalides');
   }
   delete user.password;
-
-  if (!user.avatar_url) {
-    user.avatar = null;
-  }
-  if (!user.compagny_id) {
-    user.compagny_id = null;
-  }
 
   const token = createJWT({
     userId: user.user_id,

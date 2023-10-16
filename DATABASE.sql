@@ -1,8 +1,10 @@
 CREATE DATABASE alumni;
 
+\c alumni;
+
 CREATE TABLE trainings(
   training_id SERIAL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL
+  training_name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE roles (
@@ -11,7 +13,7 @@ CREATE TABLE roles (
 
 CREATE TABLE stacks(
   stack_id SERIAL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL
+  stack_name VARCHAR(50) NOT NULL UNIQUE
 );
 CREATE TABLE events(
   event_id SERIAL PRIMARY KEY,
@@ -22,6 +24,15 @@ CREATE TABLE events(
   image_url VARCHAR(255),
   create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE compagnies(
+  compagny_id SERIAL PRIMARY KEY,
+  compagny_name VARCHAR(50) NOT NULL, 
+  city VARCHAR(50) NOT NULL,
+  adress VARCHAR(255),
+  is_active BOOLEAN NOT NULL DEFAULT FALSE,
+  avatar_url VARCHAR(255),
+  description TEXT
+);
 
 CREATE TABLE users(
   user_id SERIAL PRIMARY KEY,
@@ -31,14 +42,14 @@ CREATE TABLE users(
   password VARCHAR(255) NOT NULL,
   CHECK (char_length(name) >= 3 AND char_length(name) <= 50),
   CHECK (char_length(password) >= 6),
-  training_id INT REFERENCES trainings(training_id),
   description TEXT,
-  age INT NOT NULL,
-  city VARCHAR(50) NOT NULL,
+  age INT ,
+  city VARCHAR(50),
   professional_experience TEXT,
   avatar_url VARCHAR(255),
-  role_name VARCHAR(50) REFERENCES roles(name)
-  compagny_id INT REFERENCES compagnies(compagny_id)
+  role_name VARCHAR(50) REFERENCES roles(name),
+  compagny_id INT REFERENCES compagnies(compagny_id),
+  training_id INT REFERENCES trainings(training_id)
 );
 
 
@@ -48,15 +59,7 @@ CREATE TABLE user_stack(
   PRIMARY KEY (user_id,stack_id)
 );
 
-CREATE TABLE compagnies(
-  compagny_id SERIAL PRIMARY KEY,
-  name VARCHAR(50) NOT NULL, 
-  city VARCHAR(50) NOT NULL,
-  adress VARCHAR(255),
-  is_active BOOLEAN NOT NULL DEFAULT FALSE,
-  avatar_url VARCHAR(255),
-  description TEXT
-);
+
 
 CREATE TABLE jobs(
   job_id SERIAL PRIMARY KEY,
@@ -67,7 +70,7 @@ CREATE TABLE jobs(
 );
 
 
-// user roles
+
 INSERT INTO roles(name) VALUES('alumni');
 INSERT INTO roles(name) VALUES('mentor');
 INSERT INTO roles(name) VALUES('recrutor');
@@ -75,7 +78,15 @@ INSERT INTO roles(name) VALUES('moderator');
 INSERT INTO roles(name) VALUES('admin');
 
 
-// trainings
-INSERT INTO trainings(name) VALUES ('developpeur web');
-INSERT INTO trainings(name) VALUES ('bachelor');
-INSERT INTO trainings(name) VALUES ('assistant·e ressources humaines');
+
+INSERT INTO trainings(training_name) VALUES ('developpeur web');
+INSERT INTO trainings(training_name) VALUES ('bachelor');
+INSERT INTO trainings(training_name) VALUES ('assistant·e ressources humaines');
+
+
+insert into stacks(stack_name) values ('HTML');
+insert into stacks(stack_name) values ('CSS');
+insert into stacks(stack_name) values ('REACT');
+insert into stacks(stack_name) values ('JAVASCRIPT');
+insert into stacks(stack_name) values ('GIT');
+insert into stacks(stack_name) values ('POSTMAN');
