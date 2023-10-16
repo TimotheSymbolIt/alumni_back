@@ -32,14 +32,14 @@ router
   .use(authenticateUser, authorizePermissions('admin', 'moderator'))
   .route('/activation')
   .get(getAllInactiveEvents)
-  .update(updateActivationEvent);
+  .put(updateActivationEvent);
 
 // editer un event
 router
   .use(authenticateUser, authorizePermissions('admin', 'moderator'))
   .route('/edit')
   .post(validateEventInput, createEvent)
-  .update(validateEventInput, updateEvent)
+  .put(validateEventInput, updateEvent)
   .delete(deleteEvent);
 
 module.exports = router;
