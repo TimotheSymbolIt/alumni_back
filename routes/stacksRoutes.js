@@ -33,13 +33,11 @@ router
   .delete(validateUserParams, deleteUserStack);
 
 // editer un stack
-router.use(
-  authenticateUser,
-  authorizePermissions('admin', 'moderator')
-    .route('/edit')
-    .post(validateStackInput, createStack)
-    .put(validateStackInput, updateStack)
-    .delete(deleteStack)
-);
+router
+  .use(authenticateUser, authorizePermissions('admin', 'moderator'))
+  .route('/edit')
+  .post(validateStackInput, createStack)
+  .put(validateStackInput, updateStack)
+  .delete(deleteStack);
 
 module.exports = router;
