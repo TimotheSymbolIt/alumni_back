@@ -114,6 +114,7 @@ const validateCompagnyInput = withValidationErrors([
   body('description').trim().escape(),
 ]);
 
+
 const validateEventInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
   body('description').trim().escape(),
