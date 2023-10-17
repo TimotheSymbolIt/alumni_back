@@ -148,6 +148,9 @@ const validateCompagnyInput = withValidationErrors([
   body('adress').trim().escape(),
   body('description').trim().escape(),
 ]);
+
+const validateIdCompagnyParams = withValidationErrors();
+
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
