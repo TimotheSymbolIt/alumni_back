@@ -3,7 +3,6 @@ const { StatusCodes } = require('http-status-codes');
 
 //! route utilisable sans connexion
 
-// getSingleCompagny
 const getSingleCompagny = async (req, res) => {
   const { id } = req.params;
   const { rows: compagnies } = await db.query(
@@ -38,11 +37,11 @@ const getAllInactiveCompagnies = async (_req, res) => {
 //! Route avec une moderation
 
 // Activation d'une entreprise
-const updateActivationCompagnies = async (req, res) => {
-  const { id, is_active } = req.body;
+const updateActivateCompagny = async (req, res) => {
+  const { compagny_id, is_active } = req.body;
   await db.query('UPDATE compagnies SET is_active=$1 WHERE compagny_id=$2 ', [
     is_active,
-    id,
+    compagny_id,
   ]);
   res.status(StatusCodes.OK).json({ msg: 'Compte activé' });
 };
@@ -69,18 +68,27 @@ const deleteCompagny = async (req, res) => {
 
 const createCompagny = async (req, res) => {
   const { name, city, adress, avatar_url, description } = req.body;
-  await db.query(
-    'INSERT INTO compagnies(compagny_name,city,adress,avatar_url,description) VALUES($1,$2,$3,$4,$5)RETURNING *',
+  const { rows } = await db.query(
+    'INSERT INTO compagnies(compagny_name, city, adress, avatar_url, description) VALUES ($1, $2, $3, $4, $5) RETURNING compagny_id',
     [name, city, adress, avatar_url, description]
   );
-  res.status(StatusCodes.OK).json({ msg: 'compagnie créé' });
+  const compagny_id = rows[0].compagny_id;
+
+  const { userId } = req.user;
+  await db.query('UPDATE users SET compagny_id=$1  WHERE user_id=$2', [
+    compagny_id,
+    userId,
+  ]);
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: 'Compagnie créée', compagny_id: compagny_id });
 };
 
 module.exports = {
   getSingleCompagny,
   getAllCompagnies,
   getAllInactiveCompagnies,
-  updateActivationCompagnies,
+  updateActivateCompagny,
   updateCompagny,
   deleteCompagny,
   createCompagny,

@@ -5,7 +5,7 @@ const {
   getSingleCompagny,
   getAllCompagnies,
   getAllInactiveCompagnies,
-  updateActivationCompagnies,
+  updateActivateCompagny,
   updateCompagny,
   deleteCompagny,
   createCompagny,
@@ -21,11 +21,12 @@ const {
 } = require('../middlewares/validationMiddleware.js');
 
 //!Route utilisable sans connexion
+// Selectionner toutes les compagnies
 router.route('/').get(getAllCompagnies);
 
 //! Route utilisable avec une connexion
 // Récuperation d'une entreprise
-router.use(authenticateUser).route('/:id').get(getSingleCompagny);
+router.use(authenticateUser).route('/compagny/:id').get(getSingleCompagny);
 
 //! Route utilisable par  un recruteur ou admin
 
@@ -55,13 +56,13 @@ router
 // Voir les compagnies inactives
 router
   .use(authenticateUser)
-  .route('/compagny/activation')
+  .route('/activation')
   .get(authorizePermissions('admin', 'moderator'), getAllInactiveCompagnies);
 
 // activation des compagnies inactives
 router
   .use(authenticateUser)
-  .route('/compagny/activation')
-  .put(authorizePermissions('admin', 'moderator'), updateActivationCompagnies);
+  .route('/activation')
+  .put(authorizePermissions('admin', 'moderator'), updateActivateCompagny);
 
 module.exports = router;

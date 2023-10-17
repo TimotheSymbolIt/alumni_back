@@ -26,7 +26,7 @@ CREATE TABLE events(
 );
 CREATE TABLE compagnies(
   compagny_id SERIAL PRIMARY KEY,
-  compagny_name VARCHAR(50) NOT NULL, 
+  compagny_name VARCHAR(50) NOT NULL UNIQUE, 
   city VARCHAR(50) NOT NULL,
   adress VARCHAR(255),
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
@@ -48,7 +48,7 @@ CREATE TABLE users(
   professional_experience TEXT,
   avatar_url VARCHAR(255),
   role_name VARCHAR(50) REFERENCES roles(name),
-  compagny_id INT REFERENCES compagnies(compagny_id),
+  compagny_id INT DEFAULT NULL ,
   training_id INT REFERENCES trainings(training_id)
 );
 
@@ -61,6 +61,8 @@ CREATE TABLE user_stack(
 CREATE TABLE jobs(
   job_id SERIAL PRIMARY KEY,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
+  title VARCHAR(255),
+  description TEXT,
   type_job VARCHAR(20) NOT NULL CHECK (type_job IN ('internship', 'job', 'alternation')),
   compagny_id INT REFERENCES compagnies(compagny_id),
   create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -85,3 +87,7 @@ insert into stacks(stack_name) values ('REACT');
 insert into stacks(stack_name) values ('JAVASCRIPT');
 insert into stacks(stack_name) values ('GIT');
 insert into stacks(stack_name) values ('POSTMAN');
+
+INSERT INTO compagnies(compagny_name,city,adress,avatar_url) VALUES ('Oclock','Paris','1 rue de la paix','https://www.google.com/url');
+
+INSERT INTO compagnies(compagny_name,city,adress,avatar_url) VALUES ('Foreach academy','Paris','10 rue de la paix','https://www.google.com/url');

@@ -114,13 +114,21 @@ const validateCompagnyInput = withValidationErrors([
   body('description').trim().escape(),
 ]);
 
-
 const validateEventInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
   body('description').trim().escape(),
   body('date').trim().escape(),
 ]);
 
+const validateJobInput = withValidationErrors([
+  body('title').trim().escape(),
+  body('description').trim().escape(),
+  body('type_job')
+    .trim()
+    .notEmpty()
+    .withMessage('veuillez selectionner un type d annonce')
+    .escape(),
+]);
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
@@ -129,4 +137,5 @@ module.exports = {
   validateTrainingInput,
   validateCompagnyInput,
   validateEventInput,
+  validateJobInput,
 };
