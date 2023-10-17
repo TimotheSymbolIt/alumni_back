@@ -3,9 +3,21 @@ const { StatusCodes } = require('http-status-codes');
 
 //! route utilisable sans connexion
 
+// getSingleCompagny
+const getSingleCompagny = async (req, res) => {
+  const { id } = req.params;
+  const { rows: compagnies } = await db.query(
+    'SELECT *FROM compagnies WHERE compagny_id=$1',
+    [id]
+  );
+  res.status(StatusCodes.OK).json({ compagnies });
+};
+
 // getAllCompagnies
 const getAllCompagnies = async (req, res) => {
-  const { rows: compagnies } = await db.query('SELECT * FROM compagnies');
+  const { rows: compagnies } = await db.query(
+    'SELECT * FROM compagnies WHERE is_active= true'
+  );
   res.status(StatusCodes.OK).json({ compagnies });
 };
 
@@ -55,7 +67,7 @@ const deleteCompagny = async (req, res) => {
 
 // CreateCompagny
 
-const CreateCompagny = async (req, res) => {
+const createCompagny = async (req, res) => {
   const { name, city, adress, avatar_url, description } = req.body;
   await db.query(
     'INSERT INTO compagnies(compagny_name,city,adress,avatar_url,description) VALUES($1,$2,$3,$4,$5)RETURNING *',
@@ -65,10 +77,11 @@ const CreateCompagny = async (req, res) => {
 };
 
 module.exports = {
+  getSingleCompagny,
   getAllCompagnies,
   getAllInactiveCompagnies,
   updateActivationCompagnies,
   updateCompagny,
   deleteCompagny,
-  CreateCompagny,
+  createCompagny,
 };
