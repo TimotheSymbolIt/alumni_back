@@ -25,7 +25,7 @@ app.use(express.json());
 // route
 app.use('/api/v1/authUser', authUserRouter);
 app.use('/api/v1/roles', rolesRouter);
-app.use('/api/v1/compagny', compagnyRouter);
+app.use('/api/v1/compagnies', compagnyRouter);
 app.use('/api/v1/events', eventRouter);
 // app.use('/api/v1/job', jobRouter);
 app.use('/api/v1/stacks', stackRouter);
