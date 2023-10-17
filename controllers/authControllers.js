@@ -21,7 +21,7 @@ const registerUser = async (req, res) => {
   const {
     rows: [user],
   } = await db.query(
-    'INSERT INTO users (name, email,is_active, password, training_id,description, compagny_id,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
+    'INSERT INTO users (name, email,is_active, password, training_id,description,compagny_id,role_name)VALUES($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *',
     [
       name,
       email,
@@ -63,7 +63,6 @@ const loginUser = async (req, res) => {
   if (!isPasswordCorrect) {
     throw new BadRequestError('Identifiants invalides');
   }
-  delete user.password;
 
   const token = createJWT({
     userId: user.user_id,
