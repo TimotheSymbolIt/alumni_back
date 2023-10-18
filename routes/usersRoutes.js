@@ -29,7 +29,7 @@ router.route('/').get(getAllUsers);
 router.use(authenticateUser).route('/currentUser').get(getCurrentUser);
 
 // afficher un utilisateur
-router.route('/:id').get(getSingleUser);
+router.route('/user/:id').get(getSingleUser);
 
 // update activation user
 router

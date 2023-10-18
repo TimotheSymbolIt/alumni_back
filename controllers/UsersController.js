@@ -40,8 +40,11 @@ const getCurrentUser = async (req, res) => {
   const userQuery = `
     SELECT
       u.name,
+      u.email,
+      u.age,
       u.role_name,
       u.is_active,
+      u.description,
       u.avatar_url,
       c.compagny_name,
       t.training_name,
@@ -60,11 +63,14 @@ const getCurrentUser = async (req, res) => {
 
   const user = {
     name: result.name,
+    email: result.email,
     role: result.role_name,
+    age: result.age,
     active: result.is_active,
     avatar: result.avatar_url,
     compagny_name: result.compagny_name,
     training_name: result.training_name,
+    description: result.description,
     stacks: result.stacks,
   };
 
@@ -134,6 +140,7 @@ const getSingleUser = async (req, res) => {
 // updateUser
 const updateUser = async (req, res) => {
   const {
+    user_id,
     name,
     email,
     password,
@@ -153,7 +160,7 @@ const updateUser = async (req, res) => {
   //controle si l'email de l'utilisateur est changé
   const {
     rows: [userMail],
-  } = await db.query('SELECT * FROM users WHERE user_id = $1', [id]);
+  } = await db.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
 
   // controle si l'email existe déjà
   if (userMail.email !== email) {
@@ -182,7 +189,7 @@ const updateUser = async (req, res) => {
       avatar_url,
       role_name,
       compagny_id,
-      id,
+      user_id,
     ]
   );
 
@@ -192,6 +199,7 @@ const updateUser = async (req, res) => {
     name: user.name,
     role: user.role_name,
     active: user.is_active,
+    compagny_id: user.compagny_id,
   });
 
   res
@@ -201,9 +209,9 @@ const updateUser = async (req, res) => {
 
 // deleteUser
 const deleteUser = async (req, res) => {
-  const { id } = req.params;
+  const { userId } = req.user;
 
-  await db.query('DELETE FROM users WHERE user_id = $1', [id]);
+  await db.query('DELETE FROM users WHERE user_id = $1', [userId]);
   res.status(StatusCodes.OK).json({ msg: 'Compte utilisateur bien supprimé' });
 };
 
