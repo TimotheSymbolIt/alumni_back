@@ -14,7 +14,7 @@ const authUserRouter = require('./routes/authUsersRoutes.js');
 const rolesRouter = require('./routes/rolesRoutes.js');
 const compagnyRouter = require('./routes/compagniesRoutes.js');
 const eventRouter = require('./routes/eventsRoutes.js');
-// const jobRouter = require('./routes/jobsRoutes.js');
+const jobRouter = require('./routes/jobsRoutes.js');
 
 const stackRouter = require('./routes/stacksRoutes.js');
 const trainingRouter = require('./routes/trainingsRoutes.js');
@@ -27,7 +27,7 @@ app.use('/api/v1/authUser', authUserRouter);
 app.use('/api/v1/roles', rolesRouter);
 app.use('/api/v1/compagnies', compagnyRouter);
 app.use('/api/v1/events', eventRouter);
-// app.use('/api/v1/job', jobRouter);
+app.use('/api/v1/jobs', jobRouter);
 app.use('/api/v1/stacks', stackRouter);
 app.use('/api/v1/trainings', trainingRouter);
 app.use('/api/v1/users', userRouter);
