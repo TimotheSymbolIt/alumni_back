@@ -6,7 +6,7 @@ const { StatusCodes } = require('http-status-codes');
 //! route utilisable par un membre connecté
 
 //getAllJobs
-const getAllJobs = async (req, res) => {
+const getAllJobs = async (_req, res) => {
   const { rows: jobs } = await db.query(
     'SELECT j.*, c.compagny_name FROM jobs AS j JOIN compagnies AS c ON j.compagny_id = c.compagny_id WHERE j.is_active = true ORDER BY j.create_at DESC;'
   );
@@ -15,13 +15,13 @@ const getAllJobs = async (req, res) => {
 
 // getSingleJob
 const getSingleJob = async (req, res) => {
-  const { job_id } = req.body;
+  const { job_id } = req.params;
   await db.query('SELECT * FROM jobs WHERE job_id=$1', [job_id]);
   res.status(StatusCodes.OK).json({ job });
 };
 
 // getAllInactivJobs
-const getAllInactiveJobs = async (req, res) => {
+const getAllInactiveJobs = async (_req, res) => {
   const { rows: jobs } = await db.query(
     'SELECT * FROM jobs WHERE is_active=false'
   );
