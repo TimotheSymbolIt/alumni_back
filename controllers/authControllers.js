@@ -47,7 +47,7 @@ const loginUser = async (req, res) => {
   const {
     rows: [user],
   } = await db.query(
-    'SELECT name, user_id,email, password, role_name,is_active FROM users WHERE email = $1',
+    'SELECT name, user_id, password, role_name,is_active,compagny_id FROM users WHERE email = $1',
     [email]
   );
 
@@ -69,6 +69,7 @@ const loginUser = async (req, res) => {
     name: user.name,
     role: user.role_name,
     active: user.is_active,
+    compagny_id: user.compagny_id,
   });
 
   res.status(StatusCodes.OK).json({ msg: 'Utilisateur connecté', token });

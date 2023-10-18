@@ -21,7 +21,6 @@ const getAllCompagnies = async (req, res) => {
 };
 
 // getALLInactivCompagnies
-
 const getAllInactiveCompagnies = async (_req, res) => {
   const { rows: compagnies } = await db.query(
     'SELECT * FROM compagnies WHERE is_active = false'
