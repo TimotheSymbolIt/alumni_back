@@ -11,11 +11,11 @@ const authenticateUser = (req, _res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    const { name, userId, role, active } = jwt.verify(
+    const { name, userId, role, active, compagny_id } = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
-    req.user = { userId, name, role, active };
+    req.user = { userId, name, role, active, compagny_id };
 
     next();
   } catch (error) {

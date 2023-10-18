@@ -1,9 +1,60 @@
 // //! routes des offres emplois
-// const { Router } = require('express');
-// const router = Router();
+const { Router } = require('express');
+const router = Router();
 
-// router.route('/').get(getAlljobs);
+const {
+  getAllJobs,
+  getSingleJob,
+  getAllInactiveJobs,
+  updateActivateJob,
+  updateJob,
+  deleteJob,
+  createJob,
+} = require('../controllers/jobsControllers');
 
-// // auth require
-// router.route('/').post(createjob);
-// router.route('/:id').get(getSingleJob).update(updateJob).delete(deleteJob);
+const {
+  authenticateUser,
+  authorizePermissions,
+} = require('../middlewares/authenticationMiddleware.js');
+
+const { validateJobInput } = require('../middlewares/validationMiddleware.js');
+
+//!Route utilisable sans connexion
+//Selectionner tout les jobs
+router.route('/').get(getAllJobs);
+
+//! Route utilisable avec une connexion
+// Récuperation d'un job
+router.use(authenticateUser).route('/job/:id').get(getSingleJob);
+
+//! Route utilisable par  un recruteur ou admin
+// activation des jobs inactives
+router
+  .use(authenticateUser)
+  .route('/activation')
+  .put(authorizePermissions('admin', 'moderator'), updateActivateJob);
+// Voir les jobs inactives
+router
+  .use(authenticateUser)
+  .route('/activation')
+  .get(authorizePermissions('admin', 'moderator'), getAllInactiveJobs);
+// Mise a jour d'un job
+router
+  .use(authenticateUser)
+  .route('/edit')
+  .put(authorizePermissions('admin', 'moderator'), validateJobInput, updateJob);
+// supprimer un job
+router
+  .use(authenticateUser)
+  .route('/edit')
+  .delete(authorizePermissions('admin', 'moderator'), deleteJob);
+// Création d'un job
+router
+  .use(authenticateUser)
+  .route('/edit')
+  .post(
+    authorizePermissions('admin', 'moderator', 'recrutor'),
+    validateJobInput,
+    createJob
+  );
+module.exports = router;
