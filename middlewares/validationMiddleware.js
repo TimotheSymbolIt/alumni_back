@@ -57,7 +57,7 @@ const validateRegisterInput = withValidationErrors([
     .notEmpty()
     .withMessage('Le mot de passe est requis')
     .escape(),
-  body('description').trim().escape(),
+  body('description').optional().trim().escape(),
 ]);
 
 const validateLoginInput = withValidationErrors([
@@ -76,23 +76,18 @@ const validateLoginInput = withValidationErrors([
 ]);
 
 const validateUpdateUserInput = withValidationErrors([
-  body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
+  body('name').optional().trim().escape(),
   body('email')
-    .trim()
-    .notEmpty()
-    .withMessage("L'email est requis")
+    .optional()
     .isEmail()
     .withMessage("Format d'email non valide")
-    .escape(),
-  body('password')
     .trim()
-    .notEmpty()
-    .withMessage('Le mot de passe est requis')
     .escape(),
-  body('description').trim().escape(),
-  body('age').trim().escape(),
-  body('city').trim().escape(),
-  body('professional_experience').trim().escape(),
+  body('password').optional().trim().escape(),
+  body('description').optional().trim().escape(),
+  body('age').optional().isInt().trim().escape(),
+  body('city').optional().trim().escape(),
+  body('professional_experience').optional().trim().escape(),
 ]);
 
 const validateStackInput = withValidationErrors([

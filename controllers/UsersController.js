@@ -38,22 +38,23 @@ const getCurrentUser = async (req, res) => {
   const userId = req.user.userId;
 
   const userQuery = `
-    SELECT
-      u.name,
-      u.email,
-      u.age,
-      u.role_name,
-      u.is_active,
-      u.description,
-      u.avatar_url,
-      c.compagny_name,
-      t.training_name,
-      (SELECT json_agg(stack_name) FROM stacks WHERE stack_id IN (SELECT stack_id FROM user_stack WHERE user_id = $1)) AS stacks
-    FROM users u
-    LEFT JOIN compagnies c ON u.compagny_id = c.compagny_id
-    LEFT JOIN trainings t ON u.training_id = t.training_id
-    WHERE u.user_id = $1;
-  `;
+  SELECT
+    u.name,
+    u.email,
+    u.age,
+    u.role_name,
+    u.is_active,
+    u.description,
+    u.professional_experience,
+    u.avatar_url,
+    c.compagny_name,
+    t.training_name,
+    (SELECT json_agg(jsonb_build_object('stack_id', s.stack_id, 'stack_name', s.stack_name)) FROM stacks s WHERE s.stack_id IN (SELECT us.stack_id FROM user_stack us WHERE us.user_id = $1)) AS stacks
+  FROM users u
+  LEFT JOIN compagnies c ON u.compagny_id = c.compagny_id
+  LEFT JOIN trainings t ON u.training_id = t.training_id
+  WHERE u.user_id = $1;
+`;
 
   const {
     rows: [result],
@@ -71,6 +72,7 @@ const getCurrentUser = async (req, res) => {
     compagny_name: result.compagny_name,
     training_name: result.training_name,
     description: result.description,
+    professional_experience: result.professional_experience,
     stacks: result.stacks,
   };
 
@@ -139,61 +141,56 @@ const getSingleUser = async (req, res) => {
 
 // updateUser
 const updateUser = async (req, res) => {
-  const {
-    user_id,
-    name,
-    email,
-    password,
-    training_id,
-    description,
-    age,
-    city,
-    professional_experience,
-    avatar_url,
-    role_name,
-    compagny_id,
-  } = req.body;
+  const { userId } = req.user;
+  const updateData = req.body;
 
-  // hasher le mot de passe
-  const hashedPassword = await hashPassword(password);
+  // Vérifie si l'e-mail a changé
+  const userMail = (
+    await db.query('SELECT email FROM users WHERE user_id = $1', [userId])
+  ).rows[0];
 
-  //controle si l'email de l'utilisateur est changé
-  const {
-    rows: [userMail],
-  } = await db.query('SELECT * FROM users WHERE user_id = $1', [user_id]);
-
-  // controle si l'email existe déjà
-  if (userMail.email !== email) {
+  if (userMail.email !== updateData.email) {
+    // Vérifie l'unicité de l'e-mail
     const alreadyExist = await db.query(
-      'SELECT * FROM users WHERE email = $1',
-      [email]
+      'SELECT email FROM users WHERE email = $1',
+      [updateData.email]
     );
     if (alreadyExist.rows[0]) {
       throw new BadRequestError('Cet email existe déjà');
     }
   }
 
+  // Prépare les champs à mettre à jour
+  const updateFields = {};
+  const values = [];
+
+  for (const key in updateData) {
+    if (updateData.hasOwnProperty(key)) {
+      updateFields[key] = updateData[key];
+      values.push(updateData[key]);
+    }
+  }
+
+  // Construit la requête SQL dynamique
+  const queryValues = [...values, userId];
+  let queryText = 'UPDATE users SET ';
+  let updateColumns = Object.keys(updateFields);
+
+  for (let i = 0; i < updateColumns.length; i++) {
+    queryText += `${updateColumns[i]} = $${i + 1}`;
+    if (i < updateColumns.length - 1) {
+      queryText += ', ';
+    }
+  }
+
+  queryText += ` WHERE user_id = $${updateColumns.length + 1} RETURNING *`;
+
+  // Exécute la requête SQL
   const {
     rows: [user],
-  } = await db.query(
-    'UPDATE users SET name = $1, email = $2, password = $3, training_id = $4, description = $5, age = $6, city = $7, professional_experience = $8, avatar_url = $9, role_name = $10, compagny_id = $11 WHERE user_id = $12 RETURNING *',
-    [
-      name,
-      email,
-      hashedPassword,
-      training_id,
-      description,
-      age,
-      city,
-      professional_experience,
-      avatar_url,
-      role_name,
-      compagny_id,
-      user_id,
-    ]
-  );
+  } = await db.query(queryText, queryValues);
 
-  // recrée le token
+  // Recrée le token
   const token = createJWT({
     userId: user.user_id,
     name: user.name,
@@ -202,6 +199,7 @@ const updateUser = async (req, res) => {
     compagny_id: user.compagny_id,
   });
 
+  // Répond avec le token
   res
     .status(StatusCodes.CREATED)
     .json({ msg: 'Compte utilisateur bien modifié', token });
@@ -211,7 +209,8 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const { userId } = req.user;
 
-  await db.query('DELETE FROM users WHERE user_id = $1', [userId]);
+  await db.query('DELETE FROM users WHERE user_id = $1 CASCADE', [userId]);
+
   res.status(StatusCodes.OK).json({ msg: 'Compte utilisateur bien supprimé' });
 };
 

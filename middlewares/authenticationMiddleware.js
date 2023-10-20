@@ -32,19 +32,7 @@ const authorizePermissions = (...roles) => {
   };
 };
 
-const validateUserParams = (req, _res, next) => {
-  const isOwner = req.user.userId === user.user_id;
-  const isAdminOrModerator = ['admin', 'moderator'].includes(req.user.role);
-  const isTargetAdmin = user.role_name === 'admin';
-
-  if (
-    !isOwner &&
-    (!isAdminOrModerator || (isAdminOrModerator && isTargetAdmin))
-  ) {
-    throw new Error('Accès non autorisé');
-  }
-
-  next();
+module.exports = {
+  authorizePermissions,
+  authenticateUser,
 };
-
-module.exports = { authorizePermissions, authenticateUser, validateUserParams };
