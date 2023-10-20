@@ -5,7 +5,6 @@ const router = Router();
 const {
   authenticateUser,
   authorizePermissions,
-  validateUserParams,
 } = require('../middlewares/authenticationMiddleware.js');
 
 const {
@@ -16,7 +15,7 @@ const {
   getSingleUser,
   updateUser,
   deleteUser,
-} = require('../controllers/UsersController');
+} = require('../controllers/usersController');
 
 const {
   validateUpdateUserInput,
@@ -33,16 +32,16 @@ router.route('/user/:id').get(getSingleUser);
 
 // update activation user
 router
-  .use(authenticateUser, authorizePermissions('admin', 'moderator'))
+  .use(authenticateUser)
   .route('/activation')
-  .get(getAllInactiveUsers)
-  .put(updateActivationUser);
+  .get(authorizePermissions('admin', 'moderator'), getAllInactiveUsers)
+  .put(authorizePermissions('admin', 'moderator'), updateActivationUser);
 
 // editer un utilisateur
 router
   .use(authenticateUser)
   .route('/edit')
-  .put([validateUserParams, validateUpdateUserInput], updateUser)
-  .delete(validateUserParams, deleteUser);
+  .put([validateUpdateUserInput], updateUser)
+  .delete(deleteUser);
 
 module.exports = router;

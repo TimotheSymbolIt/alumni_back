@@ -15,7 +15,6 @@ const {
 const {
   authenticateUser,
   authorizePermissions,
-  validateUserParams,
 } = require('../middlewares/authenticationMiddleware.js');
 
 const {
@@ -28,9 +27,9 @@ router.route('/').get(getAllStacks);
 // ajouter un stack a un utlisateur
 router
   .use(authenticateUser)
-  .route('/user')
-  .post(validateUserParams, addUserStack)
-  .delete(validateUserParams, deleteUserStack);
+  .route('/user/:id')
+  .post(addUserStack)
+  .delete(deleteUserStack);
 
 // editer un stack
 router

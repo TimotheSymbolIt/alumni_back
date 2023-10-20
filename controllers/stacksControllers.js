@@ -10,10 +10,10 @@ const getAllStacks = async (_req, res) => {
 //addUserStack
 const addUserStack = async (req, res) => {
   const { userId } = req.user;
-  const { stack_id } = req.body;
+  const { id } = req.params;
   const { rows: stack } = await db.query(
     'INSERT into user_stack VALUES ($1,$2) RETURNING *',
-    [userId, stack_id]
+    [userId, id]
   );
   res.status(StatusCodes.OK).json({ stack });
 };
@@ -21,10 +21,11 @@ const addUserStack = async (req, res) => {
 //deleteUserStack
 const deleteUserStack = async (req, res) => {
   const { userId } = req.user;
-  const { stack_id } = req.body;
+  const { id } = req.params;
+
   const { rows: stack } = await db.query(
-    'DELETE FROM user_stack WHERE user_id=$1 AND RETURNING *',
-    [userId, stack_id]
+    'DELETE FROM user_stack WHERE user_id=$1 AND stack_id=$2 RETURNING *',
+    [userId, id]
   );
   res.status(StatusCodes.OK).json({ stack });
 };
