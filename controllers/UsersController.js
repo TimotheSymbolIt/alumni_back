@@ -1,4 +1,5 @@
 const db = require('../db');
+const he = require('he');
 const { BadRequestError } = require('../errors');
 const { StatusCodes } = require('http-status-codes');
 const { hashPassword } = require('../utils/passwordUtils.js');
@@ -29,6 +30,12 @@ const getAllUsers = async (_req, res) => {
   `;
 
   const { rows: users } = await db.query(userQuery);
+
+  // déséchaper user description et professional_experience
+  users.map((user) => {
+    user.description = he.decode(user.description);
+    user.professional_experience = he.decode(user.professional_experience);
+  });
 
   res.status(StatusCodes.OK).json({ users });
 };
@@ -61,6 +68,10 @@ const getCurrentUser = async (req, res) => {
   } = await db.query(userQuery, [userId]);
 
   delete result.password;
+
+  // déséchaper user description et professional_experience
+  result.description = he.decode(result.description);
+  result.professional_experience = he.decode(result.professional_experience);
 
   const user = {
     name: result.name,
@@ -136,6 +147,10 @@ const getSingleUser = async (req, res) => {
   // Supprimez le mot de passe des données utilisateur
   delete result.password;
 
+  // déséchaper user description et professional_experience
+  result.description = he.decode(result.description);
+  result.professional_experience = he.decode(result.professional_experience);
+
   res.status(StatusCodes.OK).json({ user: result });
 };
 
@@ -166,8 +181,13 @@ const updateUser = async (req, res) => {
 
   for (const key in updateData) {
     if (updateData.hasOwnProperty(key)) {
-      updateFields[key] = updateData[key];
-      values.push(updateData[key]);
+      // Si la clé est "password", hachez le mot de passe
+      if (key === 'password') {
+        updateFields[key] = await hashPassword(updateData[key]);
+      } else {
+        updateFields[key] = updateData[key];
+      }
+      values.push(updateFields[key]);
     }
   }
 

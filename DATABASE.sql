@@ -22,7 +22,7 @@ CREATE TABLE events(
   description TEXT,
   date DATE,
   image_url VARCHAR(255),
-  create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE compagnies(
   compagny_id SERIAL PRIMARY KEY,
