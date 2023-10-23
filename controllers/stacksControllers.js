@@ -7,27 +7,46 @@ const getAllStacks = async (_req, res) => {
   res.status(StatusCodes.OK).json({ stacks });
 };
 
-//addUserStack
-const addUserStack = async (req, res) => {
+const updateUserStack = async (req, res) => {
   const { userId } = req.user;
-  const { id } = req.params;
-  const { rows: stack } = await db.query(
-    'INSERT into user_stack VALUES ($1,$2) RETURNING *',
-    [userId, id]
-  );
-  res.status(StatusCodes.OK).json({ stack });
-};
+  const { stack_id } = req.body;
 
-//deleteUserStack
-const deleteUserStack = async (req, res) => {
-  const { userId } = req.user;
-  const { id } = req.params;
+  try {
+    // Récupérer les stacks existants de l'utilisateur
+    const { rows: existingStacks } = await db.query(
+      'SELECT stack_id FROM user_stack WHERE user_id = $1',
+      [userId]
+    );
 
-  const { rows: stack } = await db.query(
-    'DELETE FROM user_stack WHERE user_id=$1 AND stack_id=$2 RETURNING *',
-    [userId, id]
-  );
-  res.status(StatusCodes.OK).json({ stack });
+    // Supprimer les stacks qui ne sont pas inclus dans les nouveaux stacks
+    const stacksToDelete = existingStacks
+      .filter((stack) => !stack_id.includes(stack.stack_id))
+      .map((stack) => stack.stack_id);
+
+    for (let id of stacksToDelete) {
+      await db.query(
+        'DELETE FROM user_stack WHERE user_id = $1 AND stack_id = $2',
+        [userId, id]
+      );
+    }
+
+    // Ajouter les nouveaux stacks à la base de données
+    const stacksToInsert = stack_id
+      .split(',')
+      .filter((id) => !existingStacks.some((stack) => stack.stack_id === id));
+
+    for (let id of stacksToInsert) {
+      await db.query(
+        'INSERT INTO user_stack (user_id, stack_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+        [userId, id]
+      );
+    }
+
+    res.status(200).send('Stacks updated successfully');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
 };
 
 // createStack
@@ -65,6 +84,5 @@ module.exports = {
   getAllStacks,
   updateStack,
   deleteStack,
-  addUserStack,
-  deleteUserStack,
+  updateUserStack,
 };

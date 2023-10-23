@@ -8,8 +8,7 @@ const {
   getAllStacks,
   updateStack,
   deleteStack,
-  deleteUserStack,
-  addUserStack,
+  updateUserStack,
 } = require('../controllers/stacksControllers');
 
 const {
@@ -25,11 +24,7 @@ const {
 router.route('/').get(getAllStacks);
 
 // ajouter un stack a un utlisateur
-router
-  .use(authenticateUser)
-  .route('/user/:id')
-  .post(addUserStack)
-  .delete(deleteUserStack);
+router.use(authenticateUser).route('/user').put(updateUserStack);
 
 // editer un stack
 router
