@@ -20,6 +20,7 @@ const {
 
 const {
   validateUpdateUserInput,
+  validateUserId,
 } = require('../middlewares/validationMiddleware.js');
 
 // afficher tous les utilisateurs
@@ -29,7 +30,7 @@ router.route('/').get(getAllUsers);
 router.use(authenticateUser).route('/currentUser').get(getCurrentUser);
 
 // afficher un utilisateur
-router.route('/user/:id').get(getSingleUser);
+router.route('/user/:id').get(validateUserId, getSingleUser);
 
 // update activation user
 router
