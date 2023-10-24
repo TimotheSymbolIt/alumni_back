@@ -15,7 +15,8 @@ const {
   getSingleUser,
   updateUser,
   deleteUser,
-} = require('../controllers/usersController');
+  updateMentoringUser,
+} = require('../controllers/usersController.js');
 
 const {
   validateUpdateUserInput,
@@ -43,5 +44,8 @@ router
   .route('/edit')
   .put([validateUpdateUserInput], updateUser)
   .delete(deleteUser);
+
+// devenir mentor pour un utilisateur
+router.use(authenticateUser).route('/mentoring').put(updateMentoringUser);
 
 module.exports = router;
