@@ -90,6 +90,20 @@ const validateUpdateUserInput = withValidationErrors([
   body('professional_experience').optional().trim().escape(),
 ]);
 
+const validateUserId = withValidationErrors([
+  param('id').custom(async (id, { req }) => {
+    if (isNaN(Number(id))) {
+      throw new Error('Id non valide');
+    }
+    const {
+      rows: [user],
+    } = await db.query('SELECT * FROM users WHERE user_id = $1', [id]);
+    if (!user) {
+      throw new Error(`Pas d'utilisateur avec l'id ${id}`);
+    }
+  }),
+]);
+
 const validateStackInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
 ]);
@@ -128,6 +142,7 @@ module.exports = {
   validateRegisterInput,
   validateLoginInput,
   validateUpdateUserInput,
+  validateUserId,
   validateStackInput,
   validateTrainingInput,
   validateCompagnyInput,
