@@ -33,8 +33,12 @@ const getAllUsers = async (_req, res) => {
 
   // déséchaper user description et professional_experience
   users.map((user) => {
-    user.description = he.decode(user.description);
-    user.professional_experience = he.decode(user.professional_experience);
+    if (user.description) {
+      user.description = he.decode(result.description);
+    }
+    if (user.professional_experience) {
+      user.professional_experience = he.decode(user.professional_experience);
+    }
   });
 
   res.status(StatusCodes.OK).json({ users });
@@ -70,8 +74,12 @@ const getCurrentUser = async (req, res) => {
   delete result.password;
 
   // déséchaper user description et professional_experience
-  result.description = he.decode(result.description);
-  result.professional_experience = he.decode(result.professional_experience);
+  if (result.description) {
+    result.description = he.decode(result.description);
+  }
+  if (result.professional_experience) {
+    result.professional_experience = he.decode(result.professional_experience);
+  }
 
   const user = {
     name: result.name,
@@ -148,8 +156,12 @@ const getSingleUser = async (req, res) => {
   delete result.password;
 
   // déséchaper user description et professional_experience
-  result.description = he.decode(result.description);
-  result.professional_experience = he.decode(result.professional_experience);
+  if (result.description) {
+    result.description = he.decode(result.description);
+  }
+  if (result.professional_experience) {
+    result.professional_experience = he.decode(result.professional_experience);
+  }
 
   res.status(StatusCodes.OK).json({ user: result });
 };
@@ -229,9 +241,25 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const { userId } = req.user;
 
-  await db.query('DELETE FROM users WHERE user_id = $1 CASCADE', [userId]);
+  // supprimer ces stacks
+  await db.query('DELETE FROM user_stack WHERE user_id = $1', [userId]);
+
+  // supprimer l'utilisateur
+  await db.query('DELETE FROM users WHERE user_id = $1', [userId]);
 
   res.status(StatusCodes.OK).json({ msg: 'Compte utilisateur bien supprimé' });
+};
+
+// devenir mentor
+const updateMentoringUser = async (req, res) => {
+  const { userId } = req.user;
+
+  await db.query('UPDATE users SET role_name = $1 WHERE user_id = $2', [
+    'mentor',
+    userId,
+  ]);
+
+  res.status(StatusCodes.OK).json({ msg: 'Compte utilisateur bien modifié' });
 };
 
 module.exports = {
@@ -242,4 +270,5 @@ module.exports = {
   getSingleUser,
   updateUser,
   deleteUser,
+  updateMentoringUser,
 };
