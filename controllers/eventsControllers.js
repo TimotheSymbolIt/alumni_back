@@ -3,11 +3,26 @@ const db = require('../db');
 const { StatusCodes } = require('http-status-codes');
 
 //getAllEvents
-const getAllEvents = async (_req, res) => {
-  const { rows: events } = await db.query(
-    'SELECT * FROM events WHERE is_active = true ORDER BY created_at DESC'
-  );
-  res.status(StatusCodes.OK).json({ events });
+const getAllEvents = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 2;
+  const offset = (page - 1) * limit;
+
+  console.log(page);
+
+  const query = `
+    SELECT * FROM events
+    WHERE is_active = true
+    ORDER BY created_at DESC
+    LIMIT $1
+    OFFSET $2
+  `;
+
+  const values = [limit, offset];
+
+  const { rows: events } = await db.query(query, values);
+
+  res.status(StatusCodes.OK).json({ events, page });
 };
 
 // getAllInactiveEvents
