@@ -6,18 +6,32 @@ const { StatusCodes } = require('http-status-codes');
 //! route utilisable par un membre connecté
 
 //getAllJobs
-const getAllJobs = async (_req, res) => {
-  const { rows: jobs } = await db.query(
-    'SELECT j.*, c.compagny_name FROM jobs AS j JOIN compagnies AS c ON j.compagny_id = c.compagny_id WHERE j.is_active = true ORDER BY j.create_at DESC;'
-  );
+const getAllJobs = async (req, res) => {
+  const { title } = req.query;
+  let query =
+    'SELECT j.*, c.compagny_name,c.avatar_url FROM jobs AS j JOIN compagnies AS c ON j.compagny_id = c.compagny_id WHERE j.is_active = true';
+  if (title) {
+    query += ` AND j.title LIKE $1`;
+  }
+  query += ' ORDER BY j.created_at DESC;';
+
+  const params = title ? [`%${title}%`] : [];
+  const { rows: jobs } = await db.query(query, params);
   res.status(StatusCodes.OK).json({ jobs });
 };
 
 // getSingleJob
 const getSingleJob = async (req, res) => {
-  const { job_id } = req.params;
-  await db.query('SELECT * FROM jobs WHERE job_id=$1', [job_id]);
+  const { id } = req.params;
+  console.log(typeof id);
+  const {
+    rows: [job],
+  } = await db.query(
+    ' SELECT j.*, c.compagny_name, c.adress, c.avatar_url FROM jobs j JOIN compagnies c ON j.compagny_id = c.compagny_id WHERE j.job_id = $1 ',
+    [id]
+  );
   res.status(StatusCodes.OK).json({ job });
+  console.log(job);
 };
 
 // getAllInactivJobs
@@ -53,20 +67,49 @@ const deleteJob = async (req, res) => {
 // Creation d'un job
 const createJob = async (req, res) => {
   const { compagny_id } = req.user;
-  const { title, description, type_job } = req.body;
+  const {
+    title,
+    city,
+    description,
+    type_job,
+    date,
+    remuneration,
+    experience,
+    email,
+  } = req.body;
   await db.query(
-    'INSERT INTO jobs(title, description, type_job, compagny_id) VALUES ($1, $2, $3, $4) ',
-    [title, description, type_job, compagny_id]
+    'INSERT INTO jobs(title, city, description, type_job,date,remuneration,experience,email, compagny_id) VALUES ($1, $2, $3, $4,$5,$6,$7,$8,$9) ',
+    [
+      title,
+      city,
+      description,
+      type_job,
+      date,
+      remuneration,
+      experience,
+      email,
+      compagny_id,
+    ]
   );
   res.status(StatusCodes.OK).json({ msg: 'Annonce enregister' });
 };
 
 // Mise a jour d'un job
 const updateJob = async (req, res) => {
-  const { title, description, type_job, job_id } = req.body;
+  const {
+    title,
+    city,
+    description,
+    type_job,
+    date,
+    remuneration,
+    experience,
+    email,
+    job_id,
+  } = req.body;
   await db.query(
-    'UPDATE jobs SET title=$1, description=$2, type_job=$3 WHERE job_id=$4',
-    [title, description, type_job, job_id]
+    'UPDATE jobs SET title=$1,city=$2 description=$3, type_job=$4,date=$5,remuneration=$6,experience=$7,email=$8 WHERE job_id=$9',
+    [title, city, description, type_job, date, experience, email, job_id]
   );
   res.status(StatusCodes.CREATED).json({ msg: 'Annonce  modifié' });
 };
