@@ -62,11 +62,16 @@ CREATE TABLE user_stack(
 CREATE TABLE jobs(
   job_id SERIAL PRIMARY KEY,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
-  title VARCHAR(255),
+  title VARCHAR(100),
+  city VARCHAR(100),
   description TEXT,
   type_job VARCHAR(20) NOT NULL CHECK (type_job IN ('internship', 'job', 'alternation')),
+  date Date,
+  remuneration  INT,
+  experience VARCHAR(100)
+  email VARCHAR(255) NOT NULL,
   compagny_id INT REFERENCES compagnies(compagny_id),
-  create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 INSERT INTO roles(name) VALUES('alumni');
