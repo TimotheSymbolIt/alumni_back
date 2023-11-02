@@ -5,43 +5,61 @@ const { StatusCodes } = require('http-status-codes');
 const { hashPassword } = require('../utils/passwordUtils.js');
 const { createJWT } = require('../utils/tokenUtils.js');
 
-const getAllUsers = async (_req, res) => {
+const getAllUsers = async (req, res) => {
+  const { title, training } = req.query;
+  const page = Number(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
+
+  // Condition WHERE pour le titre
+  const whereClauseTitle = title
+    ? `AND lower(u.name) LIKE lower('%${title}%')`
+    : '';
+
+  // Condition WHERE pour la formation (training)
+  const whereClauseTraining = training ? `AND u.training_id = ${training}` : '';
+
+  // Requête SQL pour récupérer les utilisateurs
   const userQuery = `
-    SELECT
-      u.user_id,
-      u.name,
-      u.email,
-      u.role_name,
-      u.avatar_url,
-      u.description,
-      u.age,
-      u.city,
-      u.professional_experience,
-      c.compagny_name,
-      t.training_name,
-      (SELECT json_agg(s.stack_name) FROM stacks s
-        JOIN user_stack us ON s.stack_id = us.stack_id
-        WHERE us.user_id = u.user_id
-      ) AS stacks
-    FROM users u
-    LEFT JOIN compagnies c ON u.compagny_id = c.compagny_id
-    LEFT JOIN trainings t ON u.training_id = t.training_id
-    WHERE u.is_active = true AND u.compagny_id IS NULL;
-  `;
+      SELECT
+        u.user_id,
+        u.name,
+        u.email,
+        u.role_name,
+        u.avatar_url,
+        u.description,
+        u.age,
+        u.city,
+        u.professional_experience,
+        t.training_name,
+        (SELECT json_agg(s.stack_name) FROM stacks s
+          JOIN user_stack us ON s.stack_id = us.stack_id
+          WHERE us.user_id = u.user_id
+        ) AS stacks
+      FROM users u
+      LEFT JOIN trainings t ON u.training_id = t.training_id
+      WHERE u.is_active = true AND u.compagny_id IS NULL
+      ${whereClauseTitle}
+      ${whereClauseTraining}
+      ORDER BY u.user_id ASC
+      LIMIT $1 OFFSET $2
+    `;
 
-  const { rows: users } = await db.query(userQuery);
+  const values = [limit, offset];
 
-  // déséchaper user description et professional_experience
+  const { rows: users } = await db.query(userQuery, values);
+
+  // Décodage des champs description et professional_experience
   users.map((user) => {
     if (user.description) {
-      user.description = he.decode(result.description);
+      user.description = he.decode(user.description);
     }
     if (user.professional_experience) {
       user.professional_experience = he.decode(user.professional_experience);
     }
   });
 
-  res.status(StatusCodes.OK).json({ users });
+  res.status(StatusCodes.OK).json({ users, page, title, training });
 };
 
 // retourner l'utilisateur courant
