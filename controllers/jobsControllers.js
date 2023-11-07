@@ -23,7 +23,6 @@ const getAllJobs = async (req, res) => {
 // getSingleJob
 const getSingleJob = async (req, res) => {
   const { id } = req.params;
-  console.log(typeof id);
   const {
     rows: [job],
   } = await db.query(
@@ -31,7 +30,6 @@ const getSingleJob = async (req, res) => {
     [id]
   );
   res.status(StatusCodes.OK).json({ job });
-  console.log(job);
 };
 
 // getAllInactivJobs

@@ -22,8 +22,9 @@ CREATE TABLE events(
   description TEXT,
   date DATE,
   image_url VARCHAR(255),
-  create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 CREATE TABLE compagnies(
   compagny_id SERIAL PRIMARY KEY,
   compagny_name VARCHAR(50) NOT NULL UNIQUE, 
@@ -67,7 +68,7 @@ CREATE TABLE jobs(
   type_job VARCHAR(20) NOT NULL CHECK (type_job IN ('internship', 'job', 'alternation')),
   date Date,
   remuneration  INT,
-  experience VARCHAR(100)
+  experience VARCHAR(100),
   email VARCHAR(255) NOT NULL,
   compagny_id INT REFERENCES compagnies(compagny_id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -96,3 +97,22 @@ insert into stacks(stack_name) values ('POSTMAN');
 INSERT INTO compagnies(compagny_name,city,adress,avatar_url) VALUES ('Oclock','Paris','1 rue de la paix','https://www.google.com/url');
 
 INSERT INTO compagnies(compagny_name,city,adress,avatar_url) VALUES ('Foreach academy','Paris','10 rue de la paix','https://www.google.com/url');
+
+
+-- Events
+INSERT INTO events (name, description, date, image_url) VALUES
+('Événement 1', 'Description de l''événement 1', '2023-10-30', 'https://picsum.photos/600/400?random=1'),
+('Événement 2', 'Description de l''événement 2', '2023-11-15', 'https://picsum.photos/600/400?random=2'),
+('Événement 3', 'Description de l''événement 3', '2023-11-20', 'https://picsum.photos/600/400?random=3'),
+('Événement 4', 'Description de l''événement 4', '2023-12-05', 'https://picsum.photos/600/400?random=4'),
+('Événement 5', 'Description de l''événement 5', '2023-12-10', 'https://picsum.photos/600/400?random=5'),
+('Événement 6', 'Description de l''événement 6', '2023-12-20', 'https://picsum.photos/600/400?random=6'),
+('Événement 7', 'Description de l''événement 7', '2024-01-05', 'https://picsum.photos/600/400?random=7'),
+('Événement 8', 'Description de l''événement 8', '2024-01-10', 'https://picsum.photos/600/400?random=8'),
+('Événement 9', 'Description de l''événement 9', '2024-01-20', 'https://picsum.photos/600/400?random=9'),
+('Événement 10', 'Description de l''événement 10', '2024-02-05', 'https://picsum.photos/600/400?random=10'),
+('Événement 11', 'Description de l''événement 11', '2024-02-10', 'https://picsum.photos/600/400?random=11'),
+('Événement 12', 'Description de l''événement 12', '2024-02-20', 'https://picsum.photos/600/400?random=12'),
+('Événement 13', 'Description de l''événement 13', '2024-03-05', 'https://picsum.photos/600/400?random=13'),
+('Événement 14', 'Description de l''événement 14', '2024-03-10', 'https://picsum.photos/600/400?random=14'),
+('Événement 15', 'Description de l''événement 15', '2024-03-20', 'https://picsum.photos/600/400?random=15');
