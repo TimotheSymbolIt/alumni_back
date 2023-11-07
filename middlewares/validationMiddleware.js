@@ -130,14 +130,40 @@ const validateEventInput = withValidationErrors([
 ]);
 
 const validateJobInput = withValidationErrors([
-  body('title').trim().escape(),
+  body('title').trim().notEmpty().escape(),
+  body('city').trim().escape(),
   body('description').trim().escape(),
   body('type_job')
     .trim()
     .notEmpty()
     .withMessage('veuillez selectionner un type d annonce')
     .escape(),
+  body('date').trim().escape(),
+  body('remuneration').trim().escape(),
+  body('expérience').trim().escape(),
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage("L'email est requis")
+    .isEmail()
+    .withMessage("Format d'email non valide")
+    .escape(),
 ]);
+
+const validateJobId = [
+  param('id').custom(async (id, { req }) => {
+    if (isNaN(Number(id))) {
+      throw new Error('Id non valide');
+    }
+    const {
+      rows: [job],
+    } = await db.query('SELECT * FROM jobs WHERE job_id = $1', [id]);
+    if (!job) {
+      throw new Error(`Pas d'annonce avec l'id ${id}`);
+    }
+  }),
+];
+
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
@@ -148,4 +174,5 @@ module.exports = {
   validateCompagnyInput,
   validateEventInput,
   validateJobInput,
+  validateJobId,
 };

@@ -68,7 +68,7 @@ CREATE TABLE jobs(
   type_job VARCHAR(20) NOT NULL CHECK (type_job IN ('internship', 'job', 'alternation')),
   date Date,
   remuneration  INT,
-  experience VARCHAR(100)
+  experience VARCHAR(100),
   email VARCHAR(255) NOT NULL,
   compagny_id INT REFERENCES compagnies(compagny_id),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
