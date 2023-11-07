@@ -39,6 +39,7 @@ const getAllUsers = async (req, res) => {
       FROM users u
       LEFT JOIN trainings t ON u.training_id = t.training_id
       WHERE u.is_active = true AND u.compagny_id IS NULL
+      AND u.role_name != 'admin'
       ${whereClauseTitle}
       ${whereClauseTraining}
       ORDER BY u.user_id ASC
