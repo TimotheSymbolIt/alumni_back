@@ -42,8 +42,8 @@ router
 // editer un utilisateur
 router
   .use(authenticateUser)
-  .route('/edit')
-  .put([validateUpdateUserInput], updateUser)
+  .route('/edit/:id')
+  .put(validateUpdateUserInput, updateUser)
   .delete(deleteUser);
 
 // devenir mentor pour un utilisateur
