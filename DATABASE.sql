@@ -116,3 +116,14 @@ INSERT INTO events (name, description, date, image_url) VALUES
 ('Événement 13', 'Description de l''événement 13', '2024-03-05', 'https://picsum.photos/600/400?random=13'),
 ('Événement 14', 'Description de l''événement 14', '2024-03-10', 'https://picsum.photos/600/400?random=14'),
 ('Événement 15', 'Description de l''événement 15', '2024-03-20', 'https://picsum.photos/600/400?random=15');
+
+-- Jobs
+INSERT INTO jobs (is_active, title, city, description, type_job, date, remuneration, experience, email, compagny_id)
+VALUES
+(TRUE, 'Software Engineer Intern', 'Paris', 'Participate in the development of cutting-edge software solutions.', 'internship', '2024-01-15', 1200, 'No experience required', 'intern1@company.com', 1),
+(TRUE, 'Project Manager', 'Lyon', 'Oversee complex projects from inception to completion.', 'job', '2024-02-01', 3500, '5 years of project management', 'pm2@company.com', 2),
+(TRUE, 'Web Developer', 'Marseille', 'Contribute to the design and implementation of web applications.', 'job', '2024-03-20', 3200, '2+ years in web development', 'webdev1@company.com', 1),
+(TRUE, 'Graphic Designer', 'Toulouse', 'Create compelling visual content for various media.', 'alternation', '2024-04-10', 1500, 'Graphic design portfolio required', 'design2@company.com', 2),
+(TRUE, 'Data Analyst Intern', 'Nice', 'Analyze data trends and provide actionable insights.', 'internship', '2024-05-05', 1300, 'Familiarity with data analysis tools', 'data1@company.com', 1);
+
+
