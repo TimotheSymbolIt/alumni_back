@@ -50,6 +50,19 @@ const getAllUsers = async (req, res) => {
 
   const { rows: users } = await db.query(userQuery, values);
 
+  const {
+    rows: [count],
+  } = await db.query(
+    `
+      SELECT COUNT(*) AS count
+      FROM users u
+      WHERE u.is_active = true AND u.compagny_id IS NULL
+      AND u.role_name != 'admin'
+    `
+  );
+
+  const numberOfPages = Math.ceil(count.count / limit);
+
   // Décodage des champs description et professional_experience
   users.map((user) => {
     if (user.description) {
@@ -60,7 +73,7 @@ const getAllUsers = async (req, res) => {
     }
   });
 
-  res.status(StatusCodes.OK).json({ users, page, title, training });
+  res.status(StatusCodes.OK).json({ users, page, title, numberOfPages });
 };
 
 // retourner l'utilisateur courant
@@ -117,28 +130,40 @@ const getCurrentUser = async (req, res) => {
   res.status(StatusCodes.OK).json({ user });
 };
 
-const getAllInactiveUsers = async (_req, res) => {
-  const {
-    rows: [users],
-  } = await db.query('SELECT * FROM users WHERE is_active = false');
+const getAllInactiveUsers = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 10;
+  const offset = (page - 1) * limit;
 
-  delete users.password;
+  const query = `
+    SELECT name,email,is_active,user_id FROM users
+    WHERE is_active = false
+    LIMIT $1
+    OFFSET $2
+  `;
+  const values = [limit, offset];
+
+  const { rows: users } = await db.query(query, values);
+
   const {
     rows: [count],
   } = await db.query(
-    'SELECT COUNT(*) AS user_count FROM users WHERE is_active = false'
+    'SELECT COUNT(*) AS inactive_count FROM users WHERE is_active = false'
   );
-  res.status(StatusCodes.OK).json({ users, count });
+
+  const numberOfPages = Math.ceil(count.inactive_count / limit);
+
+  res.status(StatusCodes.OK).json({ users, count, page, numberOfPages });
 };
 
 const updateActivationUser = async (req, res) => {
-  const { id, is_active } = req.body;
+  const { id } = req.body;
 
   const {
     rows: [user],
   } = await db.query(
-    'UPDATE users SET is_active = $1 WHERE user_id = $2 RETURNING is_active',
-    [is_active, id]
+    'UPDATE users SET is_active = NOT is_active WHERE user_id = $1 RETURNING is_active',
+    [id]
   );
 
   res.status(StatusCodes.OK).json({ user });
@@ -258,13 +283,13 @@ const updateUser = async (req, res) => {
 
 // deleteUser
 const deleteUser = async (req, res) => {
-  const { userId } = req.user;
+  const { id } = req.params;
 
-  // supprimer ces stacks
-  await db.query('DELETE FROM user_stack WHERE user_id = $1', [userId]);
+  //  supprimer ses stacks
+  await db.query('DELETE FROM user_stack WHERE user_id = $1', [id]);
 
-  // supprimer l'utilisateur
-  await db.query('DELETE FROM users WHERE user_id = $1', [userId]);
+  //  supprimer l'utilisateur
+  await db.query('DELETE FROM users WHERE user_id = $1', [id]);
 
   res.status(StatusCodes.OK).json({ msg: 'Compte utilisateur bien supprimé' });
 };
