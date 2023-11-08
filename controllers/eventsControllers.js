@@ -8,8 +8,6 @@ const getAllEvents = async (req, res) => {
   const limit = 2;
   const offset = (page - 1) * limit;
 
-  console.log(page);
-
   const query = `
     SELECT * FROM events
     WHERE is_active = true
