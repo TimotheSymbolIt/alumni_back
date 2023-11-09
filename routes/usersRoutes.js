@@ -21,6 +21,7 @@ const {
 const {
   validateUpdateUserInput,
   validateUserId,
+  validateUserDelete,
 } = require('../middlewares/validationMiddleware.js');
 
 // afficher tous les utilisateurs
@@ -44,7 +45,7 @@ router
   .use(authenticateUser)
   .route('/edit/:id')
   .put(validateUpdateUserInput, updateUser)
-  .delete(deleteUser);
+  .delete(validateUserDelete, deleteUser);
 
 // devenir mentor pour un utilisateur
 router.use(authenticateUser).route('/mentoring').put(updateMentoringUser);

@@ -104,6 +104,30 @@ const validateUserId = withValidationErrors([
   }),
 ]);
 
+const validateUserDelete = withValidationErrors([
+  param('id').custom(async (id, { req }) => {
+    if (isNaN(Number(id))) {
+      throw new Error('Id non valide');
+    }
+
+    const {
+      rows: [user],
+    } = await db.query('SELECT * FROM users WHERE user_id = $1', [id]);
+    if (!user) {
+      throw new Error(`Pas d'utilisateur avec l'id ${id}`);
+    }
+    // Verifie que l'utilisateur connecté est admin ou modérateur ou que l'utilisateur connecté est le même que l'utilisateur à supprimer mais ne pas supprimer un admin
+    if (
+      (req.user.role !== 'admin' &&
+        req.user.role !== 'moderator' &&
+        req.user.userId !== user.user_id) ||
+      user.role_name === 'admin'
+    ) {
+      throw new Error('Accès non autorisé');
+    }
+  }),
+]);
+
 const validateStackInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
 ]);
@@ -169,6 +193,7 @@ module.exports = {
   validateLoginInput,
   validateUpdateUserInput,
   validateUserId,
+  validateUserDelete,
   validateStackInput,
   validateTrainingInput,
   validateCompagnyInput,
