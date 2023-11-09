@@ -82,6 +82,7 @@ const getCurrentUser = async (req, res) => {
 
   const userQuery = `
   SELECT
+    u.user_id,
     u.name,
     u.email,
     u.age,
@@ -114,6 +115,7 @@ const getCurrentUser = async (req, res) => {
   }
 
   const user = {
+    user_id: result.user_id,
     name: result.name,
     email: result.email,
     role: result.role_name,
@@ -214,6 +216,8 @@ const getSingleUser = async (req, res) => {
 const updateUser = async (req, res) => {
   const { userId } = req.user;
   const updateData = req.body;
+
+  delete updateData.user_id;
 
   // Vérifie si l'e-mail a changé
   const userMail = (
