@@ -25,6 +25,9 @@ const withValidationErrors = (validateValues) => {
         if (errorMessages[0].startsWith('Id non va')) {
           throw new NotFoundError(errorMessages);
         }
+        if (errorMessages[0].startsWith('Votre compte')) {
+          throw new UnauthorizedError(errorMessages);
+        }
 
         throw new BadRequestError(errorMessages);
       }
@@ -188,6 +191,23 @@ const validateJobId = [
   }),
 ];
 
+const validateNotificationId = withValidationErrors([
+  param('id').custom(async (id, { req }) => {
+    if (isNaN(Number(id))) {
+      throw new Error('Id non valide');
+    }
+    const {
+      rows: [user],
+    } = await db.query(
+      'SELECT user_id,is_active FROM users WHERE user_id = $1 AND is_active = true',
+      [id]
+    );
+    if (!user) {
+      throw new Error(`Votre compte n'est pas activé`);
+    }
+  }),
+]);
+
 module.exports = {
   validateRegisterInput,
   validateLoginInput,
@@ -200,4 +220,5 @@ module.exports = {
   validateEventInput,
   validateJobInput,
   validateJobId,
+  validateNotificationId,
 };

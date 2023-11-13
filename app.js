@@ -15,11 +15,11 @@ const rolesRouter = require('./routes/rolesRoutes.js');
 const compagnyRouter = require('./routes/compagniesRoutes.js');
 const eventRouter = require('./routes/eventsRoutes.js');
 const jobRouter = require('./routes/jobsRoutes.js');
-
 const stackRouter = require('./routes/stacksRoutes.js');
 const trainingRouter = require('./routes/trainingsRoutes.js');
-
 const userRouter = require('./routes/usersRoutes.js');
+const notificationRouter = require('./routes/notificationsRoutes.js');
+
 app.use(express.json());
 
 // route
@@ -31,6 +31,7 @@ app.use('/api/v1/jobs', jobRouter);
 app.use('/api/v1/stacks', stackRouter);
 app.use('/api/v1/trainings', trainingRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/notification', notificationRouter);
 
 app.use(notFound);
 app.use(errorHandler);
