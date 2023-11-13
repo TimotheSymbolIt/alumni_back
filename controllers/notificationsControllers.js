@@ -45,7 +45,18 @@ const getAllNotifications = async (req, res) => {
     inactiveCompagnies = compagnies.count;
     inactiveEvents = events.count;
 
+    let compteur =
+      Number(inactiveUsers) +
+      Number(inactiveJobs) +
+      Number(inactiveCompagnies) +
+      Number(inactiveEvents);
+
+    if (msg) {
+      compteur++;
+    }
+
     const notifications = {
+      compteur,
       msg,
       inactiveUsers,
       inactiveJobs,
@@ -54,14 +65,20 @@ const getAllNotifications = async (req, res) => {
     };
 
     res.status(StatusCodes.OK).json({ notifications });
+  } else {
+    // si c'est un user il recupere simplement le message
+    let compteur = 0;
+    if (msg) {
+      compteur++;
+    }
+    const notifications = {
+      compteur,
+      msg,
+    };
+    console.log(compteur);
+
+    res.status(StatusCodes.OK).json({ notifications });
   }
-
-  // si c'est un user il recupere simplement le message
-  const notifications = {
-    msg,
-  };
-
-  res.status(StatusCodes.OK).json({ notifications });
 };
 
 module.exports = {
