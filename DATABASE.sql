@@ -20,7 +20,7 @@ CREATE TABLE events(
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   name VARCHAR(255) NOT NULL,
   description TEXT,
-  date DATE,
+  event_date TIMESTAMP NOT NULL,
   image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
