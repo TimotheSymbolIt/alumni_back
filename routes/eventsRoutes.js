@@ -27,6 +27,13 @@ router.route('/').get(getAllEvents);
 // afficher un event
 router.route('/event/:id').get(getSingleEvent);
 
+//ajouter un event
+router
+  .use(authenticateUser)
+  .use(authorizePermissions('admin', 'moderator'))
+  .route('/post')
+  .post(validateEventInput, createEvent);
+
 // update activation event
 router
   .use(authenticateUser)
@@ -40,7 +47,6 @@ router
   .use(authenticateUser)
   .use(authorizePermissions('admin', 'moderator'))
   .route('/edit/:id')
-  .post(validateEventInput, createEvent)
   .put(validateEventInput, updateEvent)
   .delete(deleteEvent);
 

@@ -4,13 +4,22 @@ const { StatusCodes } = require('http-status-codes');
 
 //getAllEvents
 const getAllEvents = async (req, res) => {
+  const { title } = req.query;
   const page = Number(req.query.page) || 1;
-  const limit = 2;
+  const limit = 5;
   const offset = (page - 1) * limit;
+
+  console.log(title);
+
+  // Si je recherche avec le nom
+  const whereClauseTitle = title
+    ? `AND lower(name) LIKE lower('%${title}%')`
+    : '';
 
   const query = `
     SELECT * FROM events
     WHERE is_active = true
+    ${whereClauseTitle}
     ORDER BY created_at DESC
     LIMIT $1
     OFFSET $2
@@ -27,7 +36,7 @@ const getAllEvents = async (req, res) => {
 
   const { rows: events } = await db.query(query, values);
 
-  res.status(StatusCodes.OK).json({ events, page, numberOfPages });
+  res.status(StatusCodes.OK).json({ events, page, title, numberOfPages });
 };
 
 // getAllInactiveEvents
@@ -87,7 +96,7 @@ const getSingleEvent = async (req, res) => {
 const createEvent = async (req, res) => {
   const { name, description, date, image_url } = req.body;
   const { rows: events } = await db.query(
-    'INSERT INTO events(name, description, date, image_url) VALUES($1,$2,$3,$4) RETURNING *',
+    'INSERT INTO events(name, description, event_date, image_url) VALUES($1,$2,$3,$4) RETURNING *',
     [name, description, date, image_url]
   );
   res.status(StatusCodes.CREATED).json({ events });
