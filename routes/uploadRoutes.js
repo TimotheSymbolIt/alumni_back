@@ -8,7 +8,7 @@ const {
 } = require('../middlewares/authenticationMiddleware.js');
 
 // validation de l'image et optimisation via middleware
-const { optimizeImage } = require('../middlewares/uploadOptimizer.js');
+const { optimizeEventImage } = require('../middlewares/uploadOptimizer.js');
 
 // controllers
 const { postEventImage } = require('../controllers/uploadControllers');
@@ -17,7 +17,7 @@ router
   .use(authenticateUser)
   .use(authorizePermissions('admin', 'moderator'))
   .route('/event')
-  .post(optimizeImage, postEventImage);
+  .post(optimizeEventImage, postEventImage);
 
 // upload d'image
 module.exports = router;

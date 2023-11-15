@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 // Middleware pour optimiser les images avant d'envoyer à la requete
-const optimizeImage = async (req, res, next) => {
+const optimizeEventImage = async (req, res, next) => {
   if (!req.files) {
     return res
       .status(StatusCodes.BAD_REQUEST)
@@ -51,4 +51,4 @@ const optimizeImage = async (req, res, next) => {
   }
 };
 
-module.exports = { optimizeImage };
+module.exports = { optimizeEventImage };
