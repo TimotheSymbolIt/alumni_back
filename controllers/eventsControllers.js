@@ -15,34 +15,62 @@ const getAllEvents = async (req, res) => {
     LIMIT $1
     OFFSET $2
   `;
+  const values = [limit, offset];
 
+  const {
+    rows: [count],
+  } = await db.query(
+    'SELECT COUNT(*) AS inactive_count FROM events WHERE is_active = true'
+  );
+
+  const numberOfPages = Math.ceil(count.inactive_count / limit);
+
+  const { rows: events } = await db.query(query, values);
+
+  res.status(StatusCodes.OK).json({ events, page, numberOfPages });
+};
+
+// getAllInactiveEvents
+const getAllInactiveEvents = async (req, res) => {
+  const page = Number(req.query.page) || 1;
+  const limit = 5;
+  const offset = (page - 1) * limit;
+
+  const query = `
+    SELECT name, description, is_active, created_at, event_date, event_id FROM events
+    WHERE is_active = false
+    LIMIT $1
+    OFFSET $2
+  `;
   const values = [limit, offset];
 
   const { rows: events } = await db.query(query, values);
 
-  res.status(StatusCodes.OK).json({ events, page });
-};
-
-// getAllInactiveEvents
-const getAllInactiveEvents = async (_req, res) => {
-  const { rows: events } = await db.query(
-    'SELECT * FROM events WHERE is_active = false'
-  );
   const {
-    row: [count],
-  } = await db.query('SELECT COUNT(*) FROM events WHERE is_active = false');
+    rows: [count],
+  } = await db.query(
+    'SELECT COUNT(*) AS inactive_count FROM events WHERE is_active = false'
+  );
 
-  res.status(StatusCodes.OK).json({ events, count });
+  const numberOfPages = Math.ceil(count.inactive_count / limit);
+
+  res.status(StatusCodes.OK).json({ events, count, page, numberOfPages });
 };
 
 //updateActivationEvent
 const updateActivationEvent = async (req, res) => {
-  const { event_id, is_active } = req.body;
-  const { rows: events } = await db.query(
-    'UPDATE events SET is_active = $1 WHERE event_id = $2 RETURNING *',
-    [is_active, event_id]
+  const { id } = req.body;
+
+  console.log(req.body);
+  const {
+    rows: [event],
+  } = await db.query(
+    'UPDATE events SET is_active = NOT is_active WHERE event_id = $1 RETURNING is_active ',
+    [id]
   );
-  res.status(StatusCodes.OK).json({ events });
+
+  console.log(event);
+  res.status(StatusCodes.OK).json({ event });
 };
 
 //getSingleEvent
@@ -77,10 +105,10 @@ const updateEvent = async (req, res) => {
 
 //deleteEvent
 const deleteEvent = async (req, res) => {
-  const { event_id } = req.body;
+  const { id } = req.params;
   const { rows: events } = await db.query(
     'DELETE FROM events WHERE event_id=$1 RETURNING *',
-    [event_id]
+    [id]
   );
   res.status(StatusCodes.OK).json({ events });
 };

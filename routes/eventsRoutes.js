@@ -25,19 +25,21 @@ const {
 router.route('/').get(getAllEvents);
 
 // afficher un event
-router.route('/:id').get(getSingleEvent);
+router.route('/event/:id').get(getSingleEvent);
 
 // update activation event
 router
-  .use(authenticateUser, authorizePermissions('admin', 'moderator'))
+  .use(authenticateUser)
+  .use(authorizePermissions('admin', 'moderator'))
   .route('/activation')
   .get(getAllInactiveEvents)
   .put(updateActivationEvent);
 
 // editer un event
 router
-  .use(authenticateUser, authorizePermissions('admin', 'moderator'))
-  .route('/edit')
+  .use(authenticateUser)
+  .use(authorizePermissions('admin', 'moderator'))
+  .route('/edit/:id')
   .post(validateEventInput, createEvent)
   .put(validateEventInput, updateEvent)
   .delete(deleteEvent);
