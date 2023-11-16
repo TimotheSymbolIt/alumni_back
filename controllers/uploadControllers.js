@@ -18,7 +18,7 @@ postEventImage = async (req, res) => {
       folder: 'foreach/events',
     });
 
-    // Suppression du fichier optimisé après l'envoi
+    // Suppression du fichier
     fs.unlink(filePath, (err) => {
       if (err)
         console.error(

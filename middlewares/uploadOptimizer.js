@@ -26,7 +26,6 @@ const optimizeEventImage = async (req, res, next) => {
       .resize(600, 400)
       .jpeg({ quality: 80 })
       .toFile(optimizedFilePath);
-    // remplace l'image d'origine
 
     // Mise à jour de req.files pour refléter le fichier optimisé
     req.files.image = {
