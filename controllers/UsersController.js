@@ -1,6 +1,6 @@
-const db = require('../db');
+const db = require('../db/index.js');
 const he = require('he');
-const { BadRequestError } = require('../errors');
+const { BadRequestError } = require('../errors/index.js');
 const { StatusCodes } = require('http-status-codes');
 const { hashPassword } = require('../utils/passwordUtils.js');
 const { createJWT } = require('../utils/tokenUtils.js');

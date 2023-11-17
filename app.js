@@ -2,13 +2,21 @@ require('dotenv').config();
 require('express-async-errors');
 const express = require('express');
 const app = express();
+const fileUpload = require('express-fileupload');
+
+// Configuration de express-fileupload
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/',
+  })
+);
 
 // middlewares
 const notFound = require('./middlewares/notFoundMiddleware.js');
 const errorHandler = require('./middlewares/errorHandlerMiddleware.js');
 
 // routers
-
 //! const authCompagnyRouter = require('./routes/authCompagniesRoutes.js');
 const authUserRouter = require('./routes/authUsersRoutes.js');
 const rolesRouter = require('./routes/rolesRoutes.js');

@@ -22,7 +22,8 @@ const {
 router.route('/').get(getAllTrainings);
 
 router
-  .use(authenticateUser, authorizePermissions('admin', 'moderator'))
+  .use(authenticateUser)
+  .use(authorizePermissions('admin', 'moderator'))
   .route('/edit')
   .post(validateTrainingInput, createTraining)
   .put(validateTrainingInput, updateTraining)
