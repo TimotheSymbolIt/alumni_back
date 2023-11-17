@@ -153,7 +153,15 @@ const validateCompagnyInput = withValidationErrors([
 const validateEventInput = withValidationErrors([
   body('name').trim().notEmpty().withMessage('Le nom est requis').escape(),
   body('description').trim().escape(),
-  body('date').trim().escape(),
+]);
+const validateUpdateEventInput = withValidationErrors([
+  body('name')
+    .trim()
+    .notEmpty()
+    .withMessage('Le nom est requis')
+    .escape()
+    .optional(),
+  body('description').trim().escape().optional(),
 ]);
 
 const validateJobInput = withValidationErrors([
@@ -218,6 +226,7 @@ module.exports = {
   validateTrainingInput,
   validateCompagnyInput,
   validateEventInput,
+  validateUpdateEventInput,
   validateJobInput,
   validateJobId,
   validateNotificationId,
