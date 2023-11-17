@@ -27,7 +27,6 @@ const stackRouter = require('./routes/stacksRoutes.js');
 const trainingRouter = require('./routes/trainingsRoutes.js');
 const userRouter = require('./routes/usersRoutes.js');
 const notificationRouter = require('./routes/notificationsRoutes.js');
-const uploadRouter = require('./routes/uploadRoutes.js');
 
 app.use(express.json());
 
@@ -41,7 +40,6 @@ app.use('/api/v1/stacks', stackRouter);
 app.use('/api/v1/trainings', trainingRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/notification', notificationRouter);
-app.use('/api/v1/upload', uploadRouter);
 
 app.use(notFound);
 app.use(errorHandler);
