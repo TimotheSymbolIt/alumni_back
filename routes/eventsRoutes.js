@@ -19,6 +19,7 @@ const {
 
 const {
   validateEventInput,
+  validateUpdateEventInput,
 } = require('../middlewares/validationMiddleware.js');
 
 // afficher tous les events
@@ -47,7 +48,7 @@ router
   .use(authenticateUser)
   .use(authorizePermissions('admin', 'moderator'))
   .route('/edit/:id')
-  .put(validateEventInput, updateEvent)
+  .put(validateUpdateEventInput, updateEvent)
   .delete(deleteEvent);
 
 module.exports = router;
