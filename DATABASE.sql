@@ -15,14 +15,21 @@ CREATE TABLE stacks(
   stack_id SERIAL PRIMARY KEY,
   stack_name VARCHAR(50) NOT NULL UNIQUE
 );
+
 CREATE TABLE events(
   event_id SERIAL PRIMARY KEY,
   is_active BOOLEAN NOT NULL DEFAULT FALSE,
   name VARCHAR(255) NOT NULL,
   description TEXT,
   event_date TIMESTAMP NOT NULL,
-  image_url VARCHAR(255),
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE eventImages(
+  public_id VARCHAR(255) PRIMARY KEY,
+  url VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  event_id INT REFERENCES events(event_id)
 );
 
 CREATE TABLE compagnies(
