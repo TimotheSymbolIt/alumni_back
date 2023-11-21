@@ -138,7 +138,7 @@ const getAllInactiveUsers = async (req, res) => {
   const offset = (page - 1) * limit;
 
   const query = `
-    SELECT name,email,is_active,user_id FROM users
+    SELECT name,email,is_active,user_id,role_name FROM users
     WHERE is_active = false
     LIMIT $1
     OFFSET $2
@@ -159,13 +159,13 @@ const getAllInactiveUsers = async (req, res) => {
 };
 
 const updateActivationUser = async (req, res) => {
-  const { id } = req.body;
+  const { id, role } = req.body;
 
   const {
     rows: [user],
   } = await db.query(
-    'UPDATE users SET is_active = NOT is_active WHERE user_id = $1 RETURNING is_active',
-    [id]
+    'UPDATE users SET is_active = NOT is_active,role_name=$1 WHERE user_id = $2 RETURNING is_active',
+    [role, id]
   );
 
   res.status(StatusCodes.OK).json({ user });
