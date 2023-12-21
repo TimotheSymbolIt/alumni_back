@@ -1,53 +1,23 @@
-// //! routes des utilisateurs
-const { Router } = require('express');
+const { Router } = require("express");
 const router = Router();
 
 const {
-  authenticateUser,
-  authorizePermissions,
-} = require('../middlewares/authenticationMiddleware.js');
+	getAllUsers,
+	getUserById,
+	updateUserById,
+	deleteUserById,
+} = require("../controllers/usersController.js");
 
-const {
-  getAllUsers,
-  getCurrentUser,
-  getAllInactiveUsers,
-  updateActivationUser,
-  getSingleUser,
-  updateUser,
-  deleteUser,
-  updateMentoringUser,
-} = require('../controllers/usersController.js');
+// Afficher tous les utilisateurs
+router.route("/").get(getAllUsers);
 
-const {
-  validateUpdateUserInput,
-  validateUserId,
-  validateUserDelete,
-} = require('../middlewares/validationMiddleware.js');
+// Afficher un utilisateur
+router.route("/:id").get(getUserById);
 
-// afficher tous les utilisateurs
-router.route('/').get(getAllUsers);
+// Editer un utilisateur
+router.route("/:id").put(updateUserById);
 
-// afficher l'utilisateur connecté
-router.use(authenticateUser).route('/currentUser').get(getCurrentUser);
-
-// afficher un utilisateur
-router.route('/user/:id').get(validateUserId, getSingleUser);
-
-// update activation user
-router
-  .use(authenticateUser)
-  .route('/activation')
-  .get(authorizePermissions('admin', 'moderator'), getAllInactiveUsers)
-  .put(authorizePermissions('admin', 'moderator'), updateActivationUser);
-
-// editer un utilisateur
-router
-  .use(authenticateUser)
-  .route('/edit/:id')
-  .put(validateUpdateUserInput, updateUser)
-  .delete(validateUserDelete, deleteUser);
-
-// devenir mentor pour un utilisateur
-router.use(authenticateUser).route('/mentoring').put(updateMentoringUser);
+// Supprimer un utilisateur
+router.route("/:id").delete(deleteUserById);
 
 module.exports = router;

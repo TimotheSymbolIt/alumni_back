@@ -1,32 +1,23 @@
-// //! route des formations
-
-const { Router } = require('express');
+const { Router } = require("express");
 const router = Router();
 
 const {
-  authenticateUser,
-  authorizePermissions,
-} = require('../middlewares/authenticationMiddleware.js');
+	getAllTrainingsController,
+	createTrainingController,
+	updateTraining,
+	deleteTraining,
+} = require("../controllers/trainingsControllers");
 
-const {
-  validateTrainingInput,
-} = require('../middlewares/validationMiddleware.js');
+// Récupérer toutes les formations
+router.route("/").get(getAllTrainingsController);
 
-const {
-  getAllTrainings,
-  createTraining,
-  updateTraining,
-  deleteTraining,
-} = require('../controllers/trainingsControllers');
+// Ajouter une formation
+router.route("/").post(createTrainingController);
 
-router.route('/').get(getAllTrainings);
+// Modifier une formation
+router.route("/:id").put(updateTraining);
 
-router
-  .use(authenticateUser)
-  .use(authorizePermissions('admin', 'moderator'))
-  .route('/edit')
-  .post(validateTrainingInput, createTraining)
-  .put(validateTrainingInput, updateTraining)
-  .delete(deleteTraining);
+// Supprimer une formation
+router.route("/:id").delete(deleteTraining);
 
 module.exports = router;

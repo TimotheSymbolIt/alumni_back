@@ -1,14 +1,9 @@
-//!Route de roles
-
-const { Router } = require('express');
+const { Router } = require("express");
 const router = Router();
 
-const { getAllRoles } = require('../controllers/rolesControllers');
+const { getAllRoles } = require("../controllers/rolesControllers");
 
-const {
-  authorizePermissions,
-} = require('../middlewares/authenticationMiddleware.js');
-
-router.route('/').get(authorizePermissions('admin', 'moderator'), getAllRoles);
+//Récupérer tous les rôles
+router.get("/", getAllRoles);
 
 module.exports = router;

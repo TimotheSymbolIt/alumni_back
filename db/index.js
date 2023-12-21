@@ -1,9 +1,14 @@
-//* gestion de connexion base de données
+require("dotenv");
+const { Pool } = require("pg");
 
-const { Pool } = require('pg');
-
-const pool = new Pool({ ssl: process.env.NODE_ENV === 'production' });
+const pool = new Pool({
+	user: process.env.DATABASE_USER,
+	password: process.env.DATABASE_PASSWORD,
+	host: process.env.DATABASE_HOST,
+	port: process.env.DATABASE_PORT,
+	database: process.env.DATABASE_NAME,
+});
 
 module.exports = {
-  query: (text, params) => pool.query(text, params),
+	query: (text, params) => pool.query(text, params),
 };
